@@ -1,4 +1,4 @@
-{
+var data = {
     "nav":{
         "words":[
             {
@@ -24,3 +24,4 @@
         "../static/images/5.jpg"
     ]
 }
+export default data

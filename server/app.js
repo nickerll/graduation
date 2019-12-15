@@ -18,7 +18,7 @@ app.all('*',function(req,res,next){
     next()
 })
 
-// app.use('/users',router)    //将路由注册到/users的路径下
+app.use('/users',router)    //将路由注册到/users的路径下
 
 //连接数据库
 var url = "mongodb://localhost:27017/graduation"
@@ -31,19 +31,19 @@ mongoose.connect(url,(err) => {
     }
 })
 
-var users = [
-    { name:'admin',password:'123456'},
-    { name:'nickerll',password:'456789'}
-]
+// var users = [
+//     { name:'admin',password:'123456'},
+//     { name:'nickerll',password:'456789'}
+// ]
 
-app.post('/admin',(req,res) => {
-    var user = users.find((item) => {
-                return item.name == req.body.name && item.password == req.body.password
-            })
-            res.json(user?user:{})
-            // console.log(req.body)
-            // res.send(users)
-})
+// app.post('/admin',(req,res) => {
+//     var user = users.find((item) => {
+//                 return item.name == req.body.name && item.password == req.body.password
+//             })
+//             res.json(user?user:{})
+//             // console.log(req.body)
+//             // res.send(users)
+// })
 
 //process.env.PORT是用来读取当前目录下环境变量port的值
 var port = process.env.PORT || 3000

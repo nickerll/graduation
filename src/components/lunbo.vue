@@ -8,6 +8,7 @@
     </div>
 </template>
 <script>
+import data from '../../static/index.js'
 export default {
     data() {
         return {
@@ -32,12 +33,7 @@ export default {
         }
     },
     mounted() {
-        this.$http({
-            url:'../../static/index.json',
-            method:"get"
-        }).then((res) => {
-            this.img = res.data.banner
-        })
+        this.img = data.banner
         this.timer = setTimeout(this.next,3000)
     },
 }

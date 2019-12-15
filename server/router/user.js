@@ -30,31 +30,31 @@ router.route('/validate').post((req,res) => {
     })
 })
 
-// router.route('/Register').post((req,res) => {  //注册路由
-//     User.findOne({      //在数据表中查找
-//         name:req.body.name, //是否有与输入框相同的账号
-//     },(err) => {
-//         if (err) {      //如果错误
-//             console.log("错误是："+err)    //输出错误
-//         }
-//         var user = new User({
-//             name:req.body.name,
-//             password:req.body.password,
-//             old:req.body.old,
-//             sex:req.body.sex,
-//             address:req.body.address
-//         })
-//         user.save( (err,da) => {
-//             if(err){
-//                 console.log("错误："+err)
-//             }
-//             if(da){
-//                 console.log("这是"+da)
-//             }
-//         }) //存到数据表中
-//         res.json(user)
-//     })
-// })
+router.route('/Register').post((req,res) => {  //注册路由
+    User.findOne({      //在数据表中查找
+        name:req.body.name, //是否有与输入框相同的账号
+    },(err) => {
+        if (err) {      //如果错误
+            console.log("错误是："+err)    //输出错误
+        }
+        var user = new User({
+            name:req.body.name,
+            password:req.body.password,
+            old:req.body.old,
+            sex:req.body.sex,
+            address:req.body.address
+        })
+        user.save( (err,da) => {
+            if(err){
+                console.log("错误："+err)
+            }
+            if(da){
+                console.log("这是"+da)
+            }
+        }) //存到数据表中
+        res.json(user)
+    })
+})
 
 
 

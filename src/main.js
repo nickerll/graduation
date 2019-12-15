@@ -7,7 +7,9 @@ import "../static/css/common.css"
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import Axios from 'axios'
+Axios.defaults.baseURL = "http://localhost:3000"
 Vue.prototype.$http = Axios
+import store from './vuex'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
@@ -16,6 +18,7 @@ Vue.use(ElementUI)
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

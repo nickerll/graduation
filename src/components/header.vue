@@ -26,6 +26,7 @@
     </div>
 </template>
 <script>
+import data from  '../../static/index.js'
 export default {
     data() {
         return {
@@ -34,12 +35,7 @@ export default {
         }
     },
     mounted() {
-        this.$http({
-            url:"../../static/index.json",
-            method:"get"
-        }).then((res) => {
-            this.word = res.data.nav.words
-        })
+        this.word = data.nav.words
     },
     methods:{
         sendlink(id,index){
