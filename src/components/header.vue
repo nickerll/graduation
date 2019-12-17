@@ -4,13 +4,13 @@
             <div class="navcon">
                 <el-col :span="16">
                     <el-col class="navleft" :span="4" v-for="(item,index) in word" :key="item.id" @click="sendlink(item.id,index)">
-                        <router-link :to=item.url>{{item.word}}</router-link> 
+                        <router-link :to=item.url>{{item.word}}</router-link>
                     </el-col>
                 </el-col>
                 <el-col class="navright" :span="8">
                     <el-col :span="12">
                         <span v-if="user">
-                            <span class="welcome">欢迎你！{{user.name}}</span>    
+                            <span class="welcome">欢迎你！{{user.name}}</span>
                             <el-button class="login" type="warning" @click="logout">注销</el-button>
                         </span>
                         <el-button v-else type='success' @click='login'>登录</el-button>
@@ -39,7 +39,7 @@ export default {
     },
     methods:{
         sendlink(id,index){
-            this.$router.push('/news'+index)
+            // this.$router.push('/news'+index)
         },
         login(){
             this.$router.replace('/login')
@@ -49,6 +49,8 @@ export default {
                 this.$router.replace('/login')
             })
         }
+    },updated() {
+      console.log()
     },
     computed: {
         user(){

@@ -70,7 +70,7 @@ export default {
                                     message:'欢迎你,' + this.user.name + '!',
                                     duration:3000
                                 })
-                                this.$router.push('list')
+                                this.$router.replace('/admin/list')
                             })
                         } else {
                             this.$message({

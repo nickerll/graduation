@@ -27,7 +27,7 @@ router.route('/admin').post((req,res) => {
         res.json(admin)
     })
 })
-
+//登录
 router.route('/validate').post((req,res) => {
     User.find({
         name:req.body.name,
@@ -39,7 +39,21 @@ router.route('/validate').post((req,res) => {
         res.json(user)
     })
 })
-
+//查询所有用户
+router.route('/allusers').post((req,res) => {
+  User.find().then((data) => {
+    // console.log(data)
+    res.json(data)
+  })
+})
+//删除用户
+router.route('/deleteuser').get((req,res) => {
+  console.log({query:req.query,data:req.params,json:req.body})
+  User.remove(req.params).then((data) => {
+    console.log('数据'+data)
+  })
+})
+//注册
 router.route('/Register').post((req,res) => {  //注册路由
     User.findOne({      //在数据表中查找
         name:req.body.name, //是否有与输入框相同的账号
