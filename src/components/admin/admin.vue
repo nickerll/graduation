@@ -2,7 +2,7 @@
     <div>
         <el-form ref="loginForm" :model="user" :rules='rules' status-icon label-width="100px">
             <el-row type="flex" justify="center">
-                <el-col :span="5">
+                <el-col :span="2">
                     <el-form-item label-width="70px">
                         <span>
                             <font color="pink" size="3">管理员登录</font>
@@ -16,21 +16,21 @@
                         <el-input v-model="user.name" size="small"></el-input>
                     </el-form-item>
                 </el-col>
-            </el-row> 
+            </el-row>
             <el-row type="flex" justify="center">
                 <el-col :span="5">
                     <el-form-item label="密码:" prop="password">
-                        <el-input v-model="user.password" size="small"></el-input>
+                        <el-input type="password" v-model="user.password" size="small"></el-input>
                     </el-form-item>
                 </el-col>
-            </el-row> 
+            </el-row>
             <el-row type="flex" justify="center">
-                <el-col :span="4">
+                <el-col :span="3">
                     <el-form-item>
                        <el-button type="primary" icon="el-icon-upload" @click="submit">登录</el-button>
                     </el-form-item>
                 </el-col>
-            </el-row>    
+            </el-row>
         </el-form>
     </div>
 </template>
@@ -70,7 +70,7 @@ export default {
                                     message:'欢迎你,' + this.user.name + '!',
                                     duration:3000
                                 })
-                                this.$router.replace('/list')
+                                this.$router.push('list')
                             })
                         } else {
                             this.$message({
@@ -96,5 +96,5 @@ export default {
 }
 </script>
 <style lang="">
-    
+
 </style>

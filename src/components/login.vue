@@ -3,7 +3,7 @@
         <el-form ref="loginForm" :model="user" :rules='rules' status-icon label-width="100px">
             <el-row type="flex" justify="center">
                 <el-col :span="5">
-                    <el-form-item label-width="70px">
+                    <el-form-item label-width="70px" style="text-align: center;">
                         <span>
                             <font color="pink" size="3">注册登录页面</font>
                         </span>
@@ -16,22 +16,22 @@
                         <el-input v-model="user.name" size="small"></el-input>
                     </el-form-item>
                 </el-col>
-            </el-row> 
+            </el-row>
             <el-row type="flex" justify="center">
                 <el-col :span="5">
                     <el-form-item label="密码:" prop="password">
-                        <el-input v-model="user.password" size="small"></el-input>
+                        <el-input type="password" v-model="user.password" size="small"></el-input>
                     </el-form-item>
                 </el-col>
-            </el-row> 
+            </el-row>
             <el-row type="flex" justify="center">
-                <el-col :span="8">
+                <el-col :span="4">
                     <el-form-item>
                        <el-button type="primary" icon="el-icon-upload" @click="submit">登录</el-button>
                        <el-button icon="el-icon-upload" @click="register">注册</el-button>
                     </el-form-item>
                 </el-col>
-            </el-row>    
+            </el-row>
         </el-form>
 
     </div>
@@ -97,5 +97,5 @@ export default {
 }
 </script>
 <style lang="">
-    
+
 </style>

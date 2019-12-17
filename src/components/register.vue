@@ -2,7 +2,7 @@
     <div>
         <el-form ref='register' :model='user' :rules="rules" status-icon label-width="100px">
             <el-row type="flex" justify="center">
-                <el-col :span="5">
+                <el-col :span="2">
                     <el-form-item label-width="70px">
                         <span>
                             <font color="pick" size="3">注册页面</font>
@@ -46,7 +46,7 @@
                 </el-col>
             </el-row>
             <el-row type="flex" justify="center">
-                <el-col :span="5">
+                <el-col :span="3">
                     <el-form-item>
                        <el-button type="primary" icon="el-icon-upload" @click="register">注册</el-button>
                     </el-form-item>
@@ -84,27 +84,34 @@ export default {
             this.$refs.register.validate((valid) => {
                 if (valid) {
                     this.$http.post('/users/Register',this.user).then((res) => {
-                        console.log(res.data)
-                        if (res.data) {
-                            this.$notify({
-                                type:'success',
-                                message:'注册成功！',
-                                duration:3000
-                            })
-                            this.$router.replace('/login')
-                        }else if(this.user.name == res.data.name){
+                        if(res.data.code == 4){
                             this.$message({
-                                type:"error",
-                                message:"账号已存在",
-                                showClose:true
+                              type:'error',
+                              message:res.data.message,
+                              showClose:true
                             })
-                        } else {
-                            this.$message({
-                                type:'error',
-                                message:'注册失败！',
-                                showClose:true
-                            })
+                        }else{
+                            if (res.data) {
+                                this.$notify({
+                                    type:'success',
+                                    message:'注册成功！',
+                                    duration:3000
+                                })
+                                this.$router.replace('/login')
+                            }else {
+                                this.$message({
+                                    type:'error',
+                                    message:'注册失败！',
+                                    showClose:true
+                                })
+                            }
                         }
+                    }).catch((err) => {
+                        this.$message({
+                            type:'error',
+                            message:'网络错误，请重试',
+                            showClose:true
+                        })
                     })
                 } else {
                     return false
@@ -115,5 +122,5 @@ export default {
 }
 </script>
 <style lang="">
-    
+
 </style>
