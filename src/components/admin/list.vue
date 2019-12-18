@@ -67,7 +67,7 @@
                 </el-table-column>
               </el-table>
         </el-tab-pane>
-        <el-tab-pane label="景点展示维护">
+        <el-tab-pane label="景点展示维护" style="width: 1041px;">
           <el-button @click="addscen" v-show="scenTable" class="scenbtn" type="primary" size="mini" icon="el-icon-plus">新增</el-button>
           <el-table
           :data="scenData"
@@ -96,7 +96,7 @@
             </el-table-column>
             <el-table-column
             label="操作"
-            width="230">
+            width="250">
               <template slot-scope="scope">
                 <el-button
                   size="mini"
@@ -105,6 +105,9 @@
                   size="mini"
                   type="danger"
                   @click="scenedel(scope.$index, scope.row)">删除</el-button>
+                  <el-button
+                    size="mini"
+                    @click="scenedel(scope.$index, scope.row)">增加子类</el-button>
               </template>
             </el-table-column>
           </el-table>
