@@ -5,7 +5,7 @@ var router = express.Router()
 
 var User = require('../models/user') //存放数据的数据表
 var Admin = require('../models/admin') //存放数据的数据表
-
+var Scene = require('../models/scene.js') //存放景点的数据表
 //定义返回变量格式
 var resData;
 router.use((req,res,next) => {
@@ -49,8 +49,47 @@ router.route('/allusers').post((req,res) => {
 //删除用户
 router.route('/deleteuser').get((req,res) => {
   console.log({query:req.query,data:req.params,json:req.body})
-  User.remove(req.params).then((data) => {
-    console.log('数据'+data)
+  User.deleteOne(req.params).then((data) => {
+    console.log(data)
+    resData.code = 2
+    resData.message = '删除成功'
+    res.json(resData)
+  })
+})
+//景点展示查询所有
+router.route('/sceneAll').get((req,res) => {
+  Scene.find().then((data) => {
+    res.json(data)
+  })
+})
+//景点展示-添加景点
+router.route('/addScene').post((req,res) => { //定义接口为/addScene以及请求方式为get
+  var addscen = new Scene({  //新建一个对象 把表单中的对应的数据赋值到对应的字段中
+    title:req.body.title,
+    sceneLogo:req.body.sceneLogo,
+    describe:req.body.describe,
+    createData:new Date().getTime()
+  })
+  console.log(new Date().getDate())
+  addscen.save((err,data) => {  //将数据添加到数据库中
+    if (err) {  //如果错误
+      console.log(err)  //在终端输出错误
+    }
+    if (data) { //如果有值
+      console.log("新添的数据")
+      console.log(data) //在终端输出这条数据
+      console.log('-----------------------')
+    }
+  })
+  res.json(addscen)
+})
+//景点展示-删除景点
+router.route('/deleScene').get((req,res) => {
+  Scene.deleteOne(req.params).then((delsc) => {
+    console.log(delsc)
+    resData.code = 2
+    resData.message = '删除成功'
+    res.json(resData)
   })
 })
 //注册
