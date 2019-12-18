@@ -177,12 +177,35 @@
           upload(){
             a
           },
-          scenedit(){
+          scenedit(index,row){
 
           },
-          scenedel(){
+          scenedel(index,row){
               this.$http.get('/users/deleScene').then((res) => {
-                
+                  this.$confirm('是否删除该条信息?','提示',{
+                    confirmButtonText:'确定',
+                    cancelButtonText:'取消',
+                    type:'warning'
+                  }).then(() => {
+                    this.$http.get('/users/deleScene',{
+                      params:{
+                        sceneName:row.title
+                      }
+                    }).then((res) => {
+                      if (res.data.code == 2) {
+                        this.$message({
+                          type:'success',
+                          message:res.data.message
+                        })
+                        this.showScene()
+                      }
+                    })
+                  }).catch(() => {
+                    this.$message({
+                      type:'info',
+                      message:'已取消删除'
+                    })
+                  })
               })
           },
           //调取接口查询所有用户
