@@ -6,6 +6,8 @@ var router = express.Router()
 var User = require('../models/user') //存放数据的数据表
 var Admin = require('../models/admin') //存放数据的数据表
 var Scene = require('../models/scene.js') //存放景点的数据表
+var Human = require('../models/human.js') //存放人文地理的数据表
+var News = require("../models/news.js")   //存放新闻数据的表
 //定义返回变量格式
 var resData;
 router.use((req,res,next) => {
@@ -62,6 +64,8 @@ router.route('/sceneAll').get((req,res) => {
     res.json(data)
   })
 })
+//图片上传
+router.route('/uploadimg').post((req,res) => {console.log(res)})
 //景点展示-添加景点
 router.route('/addScene').post((req,res) => { //定义接口为/addScene以及请求方式为get
   var addscen = new Scene({  //新建一个对象 把表单中的对应的数据赋值到对应的字段中
@@ -123,7 +127,78 @@ router.route('/Register').post((req,res) => {  //注册路由
         res.json(user)
     })
 })
-
-
+//人文地理
+//查询所有的内容
+router.route('/humanAll').post((req,res) => {
+  Human.find().then((data) => {
+    res.json(data)
+  })
+})
+//删除对应的人文地理内容
+router.route('/humanDel').post((req,res) => {
+  Human.deleteOne().then((data) => {
+    resData.code = 2
+    resData.message = "删除成功"
+    res.json(resData)
+  })
+})
+//添加人文地理
+router.route('/addhuman').post((req,res) => {
+  var human = new Human({
+    title:req.body.title,
+    humanimg:req.body.humanimg,
+    humandesc:req.body.humandesc
+  })
+  human.save((err,data) => {
+    if (err) {
+      console.log(err)
+    }
+    if (data) {
+      console.log('humanadd contain:'+data)
+      console.log('-------------------------')
+    }
+  })
+  res.json(human)
+})
+//新闻发布
+//查找所有新闻内容
+router.route('/allNews').post((req,res) => {
+  News.find().then((data) => {
+    res.json(data)
+  })
+})
+//删除对应的新闻内容
+router.route('/deleteNews').post((req,res) => {
+  News.deleteOne().then((data) => {
+    resData.code = 2
+    resData.message = "删除成功"
+    res.json(resData)
+  })
+})
+//添加新闻内容
+router.route('/addNews').post((req,res) => {
+  var news = new News({
+    title:req.body.title,
+    releaseDate:req.body.releaseData,
+    releaseCon:req.body.releaseCon,
+    newsimg:req.body.newsimg
+  })
+  news.save((err,data) => {
+    if (err) {
+      console.log("新闻新增失败,发现错误:"+err)
+    }
+    if (data) {
+      console.log("新闻添加成功:"+data)
+      console.log('--------------------------')
+    }
+  })
+  res.json(news)
+})
 
 module.exports = router
+
+
+
+/**
+ * 存在问题:除删除用户之外其他的内容删除的时候不可以根据名称删除,因为用户注册的时候用户名是唯一的,所以可以根据用户名删除用户;而景点,人文等名称是可以有一样的,所以在删除的时候应该根据唯一标识id来删除.
+ * */

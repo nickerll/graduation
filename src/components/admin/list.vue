@@ -6,6 +6,7 @@
     </el-row>
 
     <el-tabs :tab-position="tabPosition">
+        <!-- 用户管理 -->
         <el-tab-pane label="用户管理">
 
           <el-table
@@ -67,6 +68,8 @@
                 </el-table-column>
               </el-table>
         </el-tab-pane>
+        <!-- 用户管理结束 -->
+        <!-- 景点展示 -->
         <el-tab-pane label="景点展示维护" style="width: 1041px;">
           <el-button @click="addscen" v-show="scenTable" class="scenbtn" type="primary" size="mini" icon="el-icon-plus">新增</el-button>
           <el-table
@@ -85,9 +88,11 @@
             width="230">
             </el-table-column>
             <el-table-column
-            prop="title"
             label="景点图片"
             width="230">
+              <el-image
+              :src="scene.sceneLogo">
+              </el-image>
             </el-table-column>
             <el-table-column
             prop='createData'
@@ -102,16 +107,16 @@
                   size="mini"
                   @click="scenedit(scope.$index, scope.row)">编辑</el-button>
                 <el-button
-                  size="mini"
-                  type="danger"
-                  @click="scenedel(scope.$index, scope.row)">删除</el-button>
-                  <el-button
-                    size="mini"
-                    @click="scenedel(scope.$index, scope.row)">增加子类</el-button>
+                size="mini"
+                type="danger"
+                @click="scenedel(scope.$index, scope.row)">删除</el-button>
+                <el-button
+                size="mini"
+                @click="sceneaddson(scope.$index, scope.row)">增加子类</el-button>
               </template>
             </el-table-column>
           </el-table>
-          <el-form v-show='scbtn' ref="sceneForm" :model="scene" :rules='rules' status-icon label-width="100px">
+          <el-form enctype="multipart/form-data" v-show='scbtn' ref="sceneForm" :model="scene" :rules='rules' status-icon label-width="100px">
               <el-row type="flex" justify="left">
                   <el-col :span="5">
                       <el-form-item label="景点名称:" prop="title">
@@ -120,9 +125,32 @@
                   </el-col>
               </el-row>
               <el-row type="flex" justify="left" style="height: auto;">
-                  <el-col :span="5">
-                      <el-form-item label="景点图片:" prop="sceneLogo">
-                        <el-button type="primary" @click="upload">点击上传</el-button>
+                  <el-col :span="8">
+                      <el-form-item label="景点图片:"> <!-- prop="sceneLogo" -->
+                        <!-- <el-button type="primary">点击上传</el-button>
+                        <el-input type="file" id="file" @click="file" ref="inputer" v-model="scene.sceneLogo"></el-input>
+                        <div class="block" v-for="(item,index) in fileList">
+                          <el-image :src="getObjectURL(item)"></el-image>
+                        </div> -->
+                        <!-- 上传结合nodejs中的multer
+                        :auto-upload=false  // 取消自动上传
+                        :on-remove="handleRemove" // 处理删除图片的操作
+                        :on-change="onchange" // 通过onchange这个属性来获取现在的图片和所有准备上传的图片
+                        :limit=1 // 限制只能上传一张，这里暂时只考虑一张图片的情况
+                        drag // 设置这个让可以把图片拖进来上传
+                        action="" // 这里暂时不设置上传地址，因为我们是要拦截在form中上传
+                        -->
+                        <el-upload
+                          class="upload-demo"
+                          action=""
+                          :auto-upload = 'false'
+                          :limit = '1'
+                          :on-preview="handlePreview"
+                          :on-remove="handleRemove"
+                          list-type="picture">
+                          <el-button size="small" type="primary">点击上传</el-button>
+                          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                        </el-upload>
                       </el-form-item>
                   </el-col>
               </el-row>
@@ -139,7 +167,7 @@
                   </el-col>
               </el-row>
               <el-row type="flex" justify="left">
-                  <el-col :span="6">
+                  <el-col :span="7">
                       <el-form-item>
                          <el-button type="primary" icon="el-icon-upload" @click="sceneSubmit">提交</el-button>
                          <el-button type="info" icon="el-icon-close" plain @click="CloseScen">关闭</el-button>
@@ -148,8 +176,99 @@
               </el-row>
           </el-form>
         </el-tab-pane>
-        <el-tab-pane label="人文地理维护">人文地理维护</el-tab-pane>
-        <el-tab-pane label="新闻发布维护">新闻发布维护</el-tab-pane>
+        <!-- 景点展示结束 -->
+        <!-- 人文地理 -->
+        <el-tab-pane label="人文地理维护">
+            <el-button type="primary" icon="el-icon-plus" size="mini">新增</el-button>
+            <el-table
+            :data="humanData"
+            border
+            style="width: 100%;">
+              <el-table-column
+              type="index"
+              label="序号"
+              width="100">
+              </el-table-column>
+              <el-table-column
+              prop="title"
+              label="名称"
+              width="180">
+              </el-table-column>
+              <el-table-column
+              prop="humanimg"
+              label="人文图片"
+              width="180">
+              <el-image :src="humanimg">
+              </el-image>
+              </el-table-column>
+              <el-table-column
+              prop="humandesc"
+              label="人文描述"
+              width="180"></el-table-column>
+              <el-table-column
+              label="操作">
+                  <template slot-scope="scope">
+                    <el-button
+                      size="mini"
+                      @click="humanedit(scope.$index, scope.row)">编辑</el-button>
+                    <el-button
+                    size="mini"
+                    type="danger"
+                    @click="humandel(scope.$index, scope.row)">删除</el-button>
+                    <el-button
+                    size="mini"
+                    @click="humanaddson(scope.$index, scope.row)">增加子类</el-button>
+                  </template>
+              </el-table-column>
+            </el-table>
+        </el-tab-pane>
+        <!-- 人文地理结束 -->
+        <!-- 新闻发布 -->
+        <el-tab-pane label="新闻发布维护">
+          <el-button type="primary" icon="el-icon-plus" size="mini">新增</el-button>
+          <el-table
+          :data="humanData"
+          border
+          style="width: 100%;">
+            <el-table-column
+            type="index"
+            label="序号"
+            width="100">
+            </el-table-column>
+            <el-table-column
+            prop="title"
+            label="名称"
+            width="180">
+            </el-table-column>
+            <el-table-column
+            prop="humanimg"
+            label="人文图片"
+            width="180">
+            <el-image :src="humanimg">
+            </el-image>
+            </el-table-column>
+            <el-table-column
+            prop="humandesc"
+            label="人文描述"
+            width="180"></el-table-column>
+            <el-table-column
+            label="操作">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    @click="humanedit(scope.$index, scope.row)">编辑</el-button>
+                  <el-button
+                  size="mini"
+                  type="danger"
+                  @click="humandel(scope.$index, scope.row)">删除</el-button>
+                  <el-button
+                  size="mini"
+                  @click="humanaddson(scope.$index, scope.row)">增加子类</el-button>
+                </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+        <!-- 新闻发布结束 -->
       </el-tabs>
   </div>
 </template>
@@ -169,6 +288,7 @@
             scbtn:false,
             scenTable:true,
             scenData:[],
+            humanData:[],
             fileList:""
           };
         },
@@ -177,12 +297,26 @@
           this.showScene()
         },
         methods:{
-          upload(){
-            a
+          file(){
+            console.log(this.$refs.inputer)
+            console.log()
+            this.$http.post('/users/uploadimg').then((res) => {console.log(res)})
           },
+          //人文编辑
+          humanedit(){},
+          //人文删除
+          humandel(){},
+          //人文增加子类
+          humanaddson(){},
+          //景点添加子类
+          sceneaddson(){
+              console.log('景点添加子类')
+          },
+          //景点编辑
           scenedit(index,row){
-
+            console.log("景点编辑")
           },
+          //景点删除
           scenedel(index,row){
               this.$http.get('/users/deleScene').then((res) => {
                   this.$confirm('是否删除该条信息?','提示',{
@@ -277,12 +411,14 @@
               }
             })
           },
+          // 景点处理图片删除的操作
           handleRemove(file, fileList) {
             console.log(file, fileList);
           },
           handlePreview(file) {
             console.log(file);
           },
+          //景点新增按钮
           addscen(){
             if (this.scbtn == true) {
               this.scbtn = false
@@ -292,6 +428,7 @@
               this.scenTable = false
             }
           },
+          //景点关闭按钮
           CloseScen(){
             this.scenTable = true
             this.scbtn = false
@@ -307,6 +444,14 @@
 </script>
 
 <style>
+  .el-button+.el-input{
+    opacity: 0;
+    width: 98px;
+    height: 40px;
+    position: absolute;
+    left: 0;
+    z-index: 50;
+  }
   .scenbtn{
     float: right;
     margin-top: 10px;
