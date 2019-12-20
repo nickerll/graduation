@@ -71,6 +71,7 @@
         <!-- 用户管理结束 -->
         <!-- 景点展示 -->
         <el-tab-pane label="景点展示维护" style="width: 1041px;">
+          <!-- 景点展示列表 -->
           <el-button @click="addscen" v-show="scenTable" class="scenbtn" type="primary" size="mini" icon="el-icon-plus">新增</el-button>
           <el-table
           :data="scenData"
@@ -91,7 +92,7 @@
             label="景点图片"
             width="230">
               <el-image
-              :src="scene.sceneLogo">
+              :src="scenimgpath">
               </el-image>
             </el-table-column>
             <el-table-column
@@ -116,6 +117,8 @@
               </template>
             </el-table-column>
           </el-table>
+          <!-- 景点展示列表结束 -->
+          <!-- 添加景点 -->
           <el-form enctype="multipart/form-data" v-show='scbtn' ref="sceneForm" :model="scene" :rules='rules' status-icon label-width="100px">
               <el-row type="flex" justify="left">
                   <el-col :span="5">
@@ -142,12 +145,16 @@
                         -->
                         <el-upload
                           class="upload-demo"
-                          action=""
+                          action="http://localhost:3000/users/addScene"
                           :auto-upload = 'false'
                           :limit = '1'
                           :on-preview="handlePreview"
                           :on-remove="handleRemove"
-                          list-type="picture">
+                          :on-change="change"
+                          :beform-upload="beforeupload"
+                          :on-progress="progress"
+                          list-type="picture"
+                          v-model="scene.sceneLogo">
                           <el-button size="small" type="primary">点击上传</el-button>
                           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
@@ -175,12 +182,15 @@
                   </el-col>
               </el-row>
           </el-form>
+          <!-- 添加景点结束 -->
         </el-tab-pane>
         <!-- 景点展示结束 -->
         <!-- 人文地理 -->
         <el-tab-pane label="人文地理维护">
-            <el-button type="primary" icon="el-icon-plus" size="mini">新增</el-button>
+          <!-- 人文列表 -->
+            <el-button class="scenbtn" type="primary" @click="humaddbtn" v-show="humbtn" icon="el-icon-plus" size="mini">新增</el-button>
             <el-table
+            v-show="humtab"
             :data="humanData"
             border
             style="width: 100%;">
@@ -198,7 +208,7 @@
               prop="humanimg"
               label="人文图片"
               width="180">
-              <el-image :src="humanimg">
+              <el-image :src="human.humanimg">
               </el-image>
               </el-table-column>
               <el-table-column
@@ -221,13 +231,48 @@
                   </template>
               </el-table-column>
             </el-table>
+            <!-- 人文列表结束 -->
+            <!-- 添加人文 -->
+            <el-form enctype="multipart/form-data" ref="humanForm" :model="human" :rules='rules' status-icon label-width="100px" v-show="humform">
+              <el-row type="flex" justify="left">
+                <el-col :span="5">
+                  <el-form-item label="名称(标题)" prop="title">
+                    <el-input v-model="human.title" size="small"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row type="flex" justify="left">
+                <el-col :span="5">
+                  <el-form-item label="人文图片" prop="humanimg">
+                    <el-image :src="human.humanimg"></el-image>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row type="flex" justify="left">
+                <el-col :span="5">
+                  <el-form-item label="人文描述" prop="humandesc">
+                    <el-input type="textarea"
+                    v-model="human.humandesc"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row type="flex" justify="left">
+                <el-col :span="5">
+                  <el-button type="primary" icon="el-icon-upload">提交</el-button>
+                  <el-button type="info" icon="el-icon-close" @click="humclose">关闭</el-button>
+                </el-col>
+              </el-row>
+            </el-form>
+            <!-- 添加人文结束 -->
         </el-tab-pane>
         <!-- 人文地理结束 -->
         <!-- 新闻发布 -->
         <el-tab-pane label="新闻发布维护">
-          <el-button type="primary" icon="el-icon-plus" size="mini">新增</el-button>
+          <!-- 新闻列表 -->
+          <el-button class="scenbtn" type="primary" @click="newsaddbtn" v-show="newsbtn" icon="el-icon-plus" size="mini">新增</el-button>
           <el-table
-          :data="humanData"
+          v-show="newstab"
+          :data="newsData"
           border
           style="width: 100%;">
             <el-table-column
@@ -236,21 +281,27 @@
             width="100">
             </el-table-column>
             <el-table-column
-            prop="title"
-            label="名称"
+            prop="newsTitle"
+            label="新闻标题"
             width="180">
             </el-table-column>
             <el-table-column
-            prop="humanimg"
-            label="人文图片"
+            prop="newsimg"
+            label="新闻图片"
             width="180">
-            <el-image :src="humanimg">
+            <el-image :src="news.newsimg">
             </el-image>
             </el-table-column>
             <el-table-column
-            prop="humandesc"
-            label="人文描述"
-            width="180"></el-table-column>
+            prop="releaseCon"
+            label="新闻内容"
+            width="180">
+            </el-table-column>
+            <el-table-column
+            prop="releaseDate"
+            label="新闻时间"
+            width="180">
+            </el-table-column>
             <el-table-column
             label="操作">
                 <template slot-scope="scope">
@@ -267,6 +318,47 @@
                 </template>
             </el-table-column>
           </el-table>
+          <!-- 新闻列表结束 -->
+          <!-- 新增新闻列表 -->
+          <el-form enctype="multipart/form-data" ref="newsForm" :model="news" :rules='rules' status-icon label-width="100px" v-show="newsform">
+            <el-row type="flex" justify="left">
+              <el-col :span="5">
+                <el-form-item label="新闻标题" prop="newsTitle">
+                  <el-input v-model="news.newsTitle" size="small"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row type="flex" justify="left">
+              <el-col :span="5">
+                <el-form-item label="新闻图片" prop="newsimg">
+                  <el-image :src="news.newsimg"></el-image>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row type="flex" justify="left">
+              <el-col :span="5">
+                <el-form-item label="新闻内容" prop="releaseCon">
+                  <el-input type="textarea"
+                  v-model="news.releaseCon"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row type="flex" justify="left">
+              <el-col :span="5">
+                <el-form-item label="新闻时间" prop="releaseDate">
+                  <el-input v-model="news.releaseDate"
+                  size="small"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row type="flex" justify="left">
+              <el-col :span="5">
+                <el-button type="primary" icon="el-icon-upload">提交</el-button>
+                <el-button type="info" icon="el-icon-close" @click="newscolse">关闭</el-button>
+              </el-col>
+            </el-row>
+          </el-form>
+          <!-- 新增新闻列表结束 -->
         </el-tab-pane>
         <!-- 新闻发布结束 -->
       </el-tabs>
@@ -280,16 +372,31 @@
             tableData: [],
             search: '',
             scene:{},
+            human:{},
+            news:{},
             rules:{
               title:[{required:true,message:'景点名称不能为空',trigger:'blur'}],
               sceneLogo:[{required:true,message:'景点图片不能为空',trigger:'blur'}],
-              describe:[{required:true,message:'景点描述不能为空',trigger:'blur'}]
+              describe:[{required:true,message:'景点描述不能为空',trigger:'blur'}],
+              humanimg:[{required:true,message:'人文图片不能为空',trigger:'blur'}],
+              humandesc:[{required:true,message:'人文描述不能为空',trigger:'blur'}],
+              newsTitle:[{required:true,message:'新闻标题不能为空',trigger:'blur'}],
+              releaseDate:[{required:true,message:'新闻时间不能为空',trigger:'blur'}],
+              releaseCon:[{required:true,message:'新闻内容不能为空',trigger:'blur'}],
+              newsimg:[{required:true,message:'新闻图片不能为空',trigger:'blur'}]
             },
             scbtn:false,
             scenTable:true,
+            humtab:true,
+            humform:false,
+            humbtn:true,
+            newstab:true,
+            newsform:false,
+            newsbtn:true,
             scenData:[],
             humanData:[],
-            fileList:""
+            newsData:[],
+            scenimgpath:""
           };
         },
         mounted() {
@@ -297,10 +404,54 @@
           this.showScene()
         },
         methods:{
-          file(){
-            console.log(this.$refs.inputer)
-            console.log()
-            this.$http.post('/users/uploadimg').then((res) => {console.log(res)})
+          change(file){
+            // console.log("上传文件")
+            // console.log(file)
+            // this.$http.post('/users/addScene',{imgpath:file.url}).then((res) => {
+            //   console.log(1)
+            //   console.log(res)
+            // })
+            this.scenimgpath = file.url
+          },
+          beforeupload(file){
+            const isImage =file.type.includes("images")
+            console.log(isImage)
+          },
+          progress(){},
+          // 新闻新增按钮
+          newsaddbtn(){
+            if (this.newsbtn == true) {
+              this.newstab = false
+              this.newsform = true
+              this.newsbtn = false
+            } else{
+              this.newstab = true
+              this.newsform = false
+              this.newsbtn = true
+            }
+          },
+          // 新闻关闭按钮
+          newscolse(){
+            this.newstab = true
+            this.newsform = false
+            this.newsbtn = true
+          },
+          //人文新增按钮
+          humaddbtn(){
+            if (this.humbtn == true) {
+              this.humtab = false
+              this.humform = true
+              this.humbtn = false
+            } else{
+              this.humtab = true
+              this.humform = false
+              this.humbtn = true
+            }
+          },
+          //人文关闭按钮
+          humclose(){
+            this.humtab = true
+            this.humform = false
           },
           //人文编辑
           humanedit(){},
@@ -397,14 +548,20 @@
           },
           //景点展示提交
           sceneSubmit(){
+            var _this = this
             this.$refs.sceneForm.validate((valid) => {
               if (valid) {
                    this.$http.post('/users/addScene',this.scene).then((res) => {
+                     console.log(res.data)
+                     _this.scenimgpath = res.data.sceneLogo
                      this.$notify({
                        title:'提示',
                        message:'添加成功',
                        type:'success'
                      })
+                     this.scenTable = true
+                     this.scbtn = false
+                     this.showScene()
                    })
               } else{
 

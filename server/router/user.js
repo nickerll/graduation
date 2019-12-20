@@ -1,8 +1,15 @@
 
-
+//引入中间件
 var express = require('express')
 var router = express.Router()
-
+var fs     = require('fs')
+var path   = require('path')
+var multer = require('multer')  //引入文件上传中间件
+var upload = multer({dest:'./upload'}) //设置上传的文件保存的目录
+var formidable = require('formidable')
+// var app = express()
+// app.use(upload.any())
+// 引入数据库表
 var User = require('../models/user') //存放数据的数据表
 var Admin = require('../models/admin') //存放数据的数据表
 var Scene = require('../models/scene.js') //存放景点的数据表
@@ -65,12 +72,41 @@ router.route('/sceneAll').get((req,res) => {
   })
 })
 //图片上传
-router.route('/uploadimg').post((req,res) => {console.log(res)})
+// router.post('/uploadimg',(req,res) => {
+//   upload.single(req.body.imgpath)
+//   var img = req.body.imgpath
+//   fs.writeFile('../upload',img,function (err) {
+//       if (err) {
+//         console.log(err)
+//       }
+//   })
+//   res.json({
+//     code:2,
+//     message:"上传成功!",
+//     imgpath:img
+//   })
+// })
+// router.route('/uploadimg').post((req,res) => {
+  // console.log({query:req.query,data:req.params,json:req.body})
+  // var form = new formidable.IncomingForm()
+  // form.uploadDir = './upload' //设置文件上传存放地址
+  // form.parse(req,function(err,fields,files){
+  //   console.log(fields) //获取传的参数信息
+  //   console.log(files)  //获取图片信息
+  // })
+  // console.log(req.file)
+  // if (req.file.length == 0) {
+  //     res.render('error',{message:"上传文件不能为空"})
+  //     return
+  // }
+// })
 //景点展示-添加景点
 router.route('/addScene').post((req,res) => { //定义接口为/addScene以及请求方式为get
+  console.log(req.body.scenimgpath)
+  var img = req.body.scenimgpath
   var addscen = new Scene({  //新建一个对象 把表单中的对应的数据赋值到对应的字段中
     title:req.body.title,
-    sceneLogo:req.body.sceneLogo,
+    sceneLogo:req.body.scenimgpath,
     describe:req.body.describe,
     createData:new Date().getTime()
   })
@@ -85,7 +121,16 @@ router.route('/addScene').post((req,res) => { //定义接口为/addScene以及�
       console.log('-----------------------')
     }
   })
-  res.json(addscen)
+  res.json({
+    code:2,
+    message:"添加成功!",
+    imgcon:[{
+      code:2,
+      imgpath:img,
+      message:"上传成功!"
+    }],
+    scenecon:addscen
+  })
 })
 //景点展示-删除景点
 router.route('/deleScene').get((req,res) => {

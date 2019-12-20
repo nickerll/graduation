@@ -1,8 +1,6 @@
 
 var express = require('express')
 var app = new express()
-var multer = require('multer')  //引入文件上传中间件
-var upload = multer({dest:'./upload'}) //设置上传的文件保存的目录
 
 var router = require('./router/user')
 
@@ -12,7 +10,6 @@ var bodyParser = require('body-parser')
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extends:false}))
 
-app.use(upload.any())
 //处理跨域
 app.all('*',function(req,res,next){
     res.header("Access-Control-Allow-Origin","*")
