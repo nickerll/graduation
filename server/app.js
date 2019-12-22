@@ -2,6 +2,43 @@
 var express = require('express')
 var app = new express()
 
+var fs = require('fs')
+var multer = require('multer')  //引入文件上传中间件
+// var upload = multer({dest:'./upload'}) //设置上传的文件保存的目录
+var createFolder = function (folder) {
+	try{
+		fs.accessSync(folder)
+	}catch(e){
+		//TODO handle the exception
+		fs.mkdirSync(folder)
+	}
+}
+var uploadFolder = './upload'
+createFolder(uploadFolder)
+//通过filename属性定制
+var storage = multer.diskStorage({
+	destination:function(req,file,cb){
+		cb(null,uploadFolder)	//保存的路径
+	},
+	filename:function(req,file,cb){
+		//将保存文件名设置为 字段名+时间戳+后缀（.jpeg/.png.....）
+		console.log(file.mimetype.split('/')[1])
+		cb(null,file.fieldname+'-'+Date.now()+'.'+file.mimetype.split('/')[1])
+	}
+})
+var upload = multer({storage:storage})
+app.post('/uploadfile',upload.single('file'),function(req,res,next){
+	console.log(req.file)
+	res.json({
+		code:2,
+		message:"success"
+	})
+})
+
+
+
+
+
 var router = require('./router/user')
 
 

@@ -4,8 +4,6 @@ var express = require('express')
 var router = express.Router()
 var fs     = require('fs')
 var path   = require('path')
-var multer = require('multer')  //引入文件上传中间件
-var upload = multer({dest:'./upload'}) //设置上传的文件保存的目录
 var formidable = require('formidable')
 // var app = express()
 // app.use(upload.any())
@@ -72,18 +70,20 @@ router.route('/sceneAll').get((req,res) => {
   })
 })
 //图片上传
-// router.post('/uploadimg',(req,res) => {
-//   upload.single(req.body.imgpath)
-//   var img = req.body.imgpath
-//   fs.writeFile('../upload',img,function (err) {
-//       if (err) {
-//         console.log(err)
-//       }
-//   })
+// router.post('/uploadimg',multer({
+//   dest:'../upload/'
+// }).single('sceneimg'),function(req,res){
+//   console.log(multer)
+//   console.log(req.body)
+//   // fs.writeFile('../upload',img,function (err) {
+//   //     if (err) {
+//   //       console.log(err)
+//   //     }
+//   // })
 //   res.json({
 //     code:2,
 //     message:"上传成功!",
-//     imgpath:img
+//     // imgpath:img
 //   })
 // })
 // router.route('/uploadimg').post((req,res) => {

@@ -145,7 +145,7 @@
                         -->
                         <el-upload
                           class="upload-demo"
-                          action="http://localhost:3000/users/addScene"
+                          action="http://localhost:3000/uploadfile"
                           :auto-upload = 'false'
                           :limit = '1'
                           :on-preview="handlePreview"
@@ -155,6 +155,7 @@
                           :on-progress="progress"
                           list-type="picture"
                           v-model="scene.sceneLogo">
+                          <el-input type="file" name="file"></el-input>
                           <el-button size="small" type="primary">点击上传</el-button>
                           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
@@ -404,14 +405,14 @@
           this.showScene()
         },
         methods:{
-          change(file){
+          change(file,row){
             // console.log("上传文件")
-            // console.log(file)
-            // this.$http.post('/users/addScene',{imgpath:file.url}).then((res) => {
-            //   console.log(1)
-            //   console.log(res)
-            // })
-            this.scenimgpath = file.url
+            console.log(file)
+            this.$http.post('/uploadfile').then((res) => {
+              console.log(1)
+              console.log(res)
+            })
+            // this.scenimgpath = file.url
           },
           beforeupload(file){
             const isImage =file.type.includes("images")

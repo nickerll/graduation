@@ -2,7 +2,7 @@
     <div>
         <el-form ref="loginForm" :model="user" :rules='rules' status-icon label-width="100px">
             <el-row type="flex" justify="center">
-                <el-col :span="2">
+                <el-col :span="3">
                     <el-form-item label-width="70px">
                         <span>
                             <font color="pink" size="3">管理员登录</font>
