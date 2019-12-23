@@ -66,7 +66,15 @@ router.route('/deleteuser').get((req,res) => {
 //景点展示查询所有
 router.route('/sceneAll').get((req,res) => {
   Scene.find().then((data) => {
-    res.json(data)
+    console.log('-----所有景点------')
+    console.log(data)
+    console.log('-----结束--------')
+    console.log(req.headers.origin+'/')
+    // href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
+    res.json({
+      href:req.headers.origin+'/',
+      scenalldata:data
+    })
   })
 })
 //图片上传
@@ -102,15 +110,16 @@ router.route('/sceneAll').get((req,res) => {
 // })
 //景点展示-添加景点
 router.route('/addScene').post((req,res) => { //定义接口为/addScene以及请求方式为get
-  console.log(req.body.scenimgpath)
+  console.log(req.headers.origin)
+  console.log(req.body.sceneLogo)
   var img = req.body.scenimgpath
   var addscen = new Scene({  //新建一个对象 把表单中的对应的数据赋值到对应的字段中
     title:req.body.title,
-    sceneLogo:req.body.scenimgpath,
+    sceneLogo:req.body.sceneLogo,
     describe:req.body.describe,
-    createData:new Date().getTime()
+    createData:new Date()
   })
-  console.log(new Date().getDate())
+  console.log(new Date())
   addscen.save((err,data) => {  //将数据添加到数据库中
     if (err) {  //如果错误
       console.log(err)  //在终端输出错误
@@ -129,6 +138,7 @@ router.route('/addScene').post((req,res) => { //定义接口为/addScene以及�
       imgpath:img,
       message:"上传成功!"
     }],
+    href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
     scenecon:addscen
   })
 })

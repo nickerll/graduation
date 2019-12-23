@@ -146,16 +146,12 @@
                         <el-upload
                           class="upload-demo"
                           action="http://localhost:3000/uploadfile"
-                          :auto-upload = 'false'
                           :limit = '1'
                           :on-preview="handlePreview"
                           :on-remove="handleRemove"
-                          :on-change="change"
-                          :beform-upload="beforeupload"
-                          :on-progress="progress"
+                          :on-success="fileimg"
                           list-type="picture"
                           v-model="scene.sceneLogo">
-                          <el-input type="file" name="file"></el-input>
                           <el-button size="small" type="primary">点击上传</el-button>
                           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
@@ -405,20 +401,11 @@
           this.showScene()
         },
         methods:{
-          change(file,row){
-            // console.log("上传文件")
+          fileimg(file,row){
             console.log(file)
-            this.$http.post('/uploadfile').then((res) => {
-              console.log(1)
-              console.log(res)
-            })
-            // this.scenimgpath = file.url
+            this.scene.sceneLogo = file.path
+            console.log('success')
           },
-          beforeupload(file){
-            const isImage =file.type.includes("images")
-            console.log(isImage)
-          },
-          progress(){},
           // 新闻新增按钮
           newsaddbtn(){
             if (this.newsbtn == true) {
@@ -510,7 +497,9 @@
             var _this = this
             this.$http.get('/users/sceneAll').then((res) => {
               console.log(res)
-              _this.scenData = res.data
+              _this.scenData = res.data.scenalldata
+              var href = res.data.href
+              console.log(this.commonUtil.getImgPath(res.data.scenalldata[0].sceneLogo))
             })
           },
           //编辑按钮
@@ -554,12 +543,14 @@
               if (valid) {
                    this.$http.post('/users/addScene',this.scene).then((res) => {
                      console.log(res.data)
-                     _this.scenimgpath = res.data.sceneLogo
                      this.$notify({
                        title:'提示',
                        message:'添加成功',
                        type:'success'
                      })
+                     this.scene.title = ''
+                     this.scene.describe = ''
+                     this.scene.sceneLogo = ''
                      this.scenTable = true
                      this.scbtn = false
                      this.showScene()

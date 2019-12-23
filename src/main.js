@@ -10,9 +10,11 @@ import Axios from 'axios'
 Axios.defaults.baseURL = "http://localhost:3000"
 Vue.prototype.$http = Axios
 import store from './vuex'
+import commonUtil from './common.js'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+Vue.use(commonUtil)
 
 /* eslint-disable no-new */
 new Vue({
@@ -20,5 +22,8 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  created() {
+    console.log()
+  }
 })
