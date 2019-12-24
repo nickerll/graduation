@@ -56,10 +56,10 @@ var upload = multer({storage:storage})
 var uploadPath
 app.post('/uploadfile',upload.single('file'),function(req,res,next){
   res.header("Access-Control-Allow-Origin","*")
-  // console.log(__dirname)//C:\Users\Administrator\Desktop\123456\graduation\server
-  // console.log(__filename)//C:\Users\Administrator\Desktop\123456\graduation\server\app.js
-	// console.log(req.file)
-	res.json({
+  // console.log(__dirname)//C:\Users\Administrator\Desktop\123456\graduation\server 相对路径
+  // console.log(__filename)//C:\Users\Administrator\Desktop\123456\graduation\server\app.js  绝对路径
+	// console.log(req.file)  //上传文件的信息
+	res.json({  //  返回的json数据
 		code:2,
 		message:"success",
     path:req.file.path
@@ -67,28 +67,30 @@ app.post('/uploadfile',upload.single('file'),function(req,res,next){
   uploadPath = req.file.path
   return uploadPath
 })
-app.get('/removeUploadfileimg',function(req,res,next){
-    // console.log(uploadPath.replace(/\\/g,'/').split('/')[1])
-    var path = uploadPath
-    fs.readdir(uploadFolder,function(err,files){
-      if (err) {
-        console.log(err)
-      }
-      files.forEach(function(file){
-        // console.log(file)
-        if (file == path) {
-          console.log(file)
-          fs.rmdir(path,function(err){
-            if (err) {
-              console.log("删除失败出现错误"+err)
-            }else{
-              console.log("删除成功!")
-            }
-          })
-        }
-      })
-    })
-})
+// app.get('/removeUploadfileimg',function(req,res,next){
+//     // console.log(uploadPath.replace(/\\/g,'/').split('/')[1])
+//     var path = uploadPath.replace(/\\/g,'/').split('/')[1]
+//     fs.readdir(uploadFolder,function(err,files){
+//       if (err) {
+//         console.log(err)
+//       }
+//       files.forEach(function(file){
+//         // console.log(file)
+//         console.log("upload文件中的内容:"+file)
+//         console.log("刚上传的图片:"+path)
+//         if (file == path) {
+//           console.log(file)
+//           fs.unlink(file,function(err){
+//             if (err) {
+//               console.log("删除失败出现错误"+err)
+//             }else{
+//               console.log("删除成功!")
+//             }
+//           })
+//         }
+//       })
+//     })
+// })
 
 app.use('/users',router)    //将路由注册到/users的路径下
 

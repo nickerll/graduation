@@ -76,15 +76,15 @@ router.route('/sceneAll').get((req,res) => {
     })
   })
 })
-//
+//定义时间
   var d = new Date()
-  var year = d.getFullYear()
-  var month = d.getMonth()+1
-  var day = d.getDate() < 10?'0'+d.getDate():''+d.getDate()
-  var hour = d.getHours()
-  var minutes = d.getMinutes()
-  var seconds = d.getSeconds()
-  var now = year+'-'+month+'-'+day+'-'+' '+hour+':'+minutes+':'+seconds
+  var year = d.getFullYear()  //年
+  var month = d.getMonth()+1  //月
+  var day = d.getDate() < 10?'0'+d.getDate():''+d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes()  //分
+  var seconds = d.getSeconds()  //秒
+  var now = year+'-'+month+'-'+day+' '+hour+':'+minutes+':'+seconds //日期拼接  年-月-日 时:分:秒
 //景点展示-添加景点
 router.route('/addScene').post((req,res) => { //定义接口为/addScene以及请求方式为get
   // console.log(req.headers.origin)
@@ -108,10 +108,6 @@ router.route('/addScene').post((req,res) => { //定义接口为/addScene以及�
   res.json({
     code:2,
     message:"添加成功!",
-    imgcon:[{
-      code:2,
-      message:"上传成功!"
-    }],
     // href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
     scenecon:addscen
   })
@@ -125,6 +121,19 @@ router.route('/deleScene').get((req,res) => {
     resData.message = '删除成功'
     res.json(resData)
   })
+})
+//景点展示-编辑景点
+router.route('/editScene').post((req,res) => {
+  console.log({query:req.query,data:req.params,json:req.body})
+  Scene.findOne({_id:req.body.id}).then((data) => {
+    console.log(data)
+    res.json({
+      code:2,
+      message:"",
+      data:data
+    })
+  })
+  Scene.update().then((res) => {})
 })
 //注册
 router.route('/Register').post((req,res) => {  //注册路由
@@ -232,4 +241,6 @@ module.exports = router
 /**
  * 存在问题:除删除用户之外其他的内容删除的时候不可以根据名称删除,因为用户注册的时候用户名是唯一的,所以可以根据用户名删除用户;而景点,人文等名称是可以有一样的,所以在删除的时候应该根据唯一标识id来删除.  ***已解决***
  * 从后端接口中请求图片路径时要将webpack.dev.conf.js中的contentBase注释掉 前端页面才能根据端口号请求到图片
+ * 
+ * 存在问题：上传图片后点击删除图片只删除了页面中的图片显示，而上传到文件夹中的图片没有被删除
  * */

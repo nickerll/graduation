@@ -455,8 +455,17 @@
           },
           //景点编辑
           scenedit(index,row){
+            var _this = this
             console.log("景点编辑")
-            console.log(row._id)
+            // console.log(row._id)
+            this.$http.post('/users/editScene',{id:row._id}).then((res) => {  //点击景点编辑的时候根据id在数据库中找到对应的值
+              console.log(res)
+              // this.$refs['uploadscenimg'].value = this.commonUtil.getImgPath(res.data.data.sceneLogo)
+              _this.scene = res.data.data
+            })
+            // this.scene.sceneLogo = ''
+            this.scenTable = false
+            this.scbtn = true
           },
           //景点删除
           scenedel(index,row){
@@ -543,6 +552,7 @@
           //景点展示提交
           sceneSubmit(){
             var _this = this
+            console.log(this.scene.title)
             this.$refs.sceneForm.validate((valid) => {
               if (valid) {
                    this.$http.post('/users/addScene',this.scene).then((res) => {
@@ -568,9 +578,10 @@
           // 景点处理图片删除的操作
           handleRemove(file, fileList) {
             console.log(file, fileList);
-            this.$http.get('/removeUploadfileimg').then( (res) => {
-              console.log(res)
-            })
+            console.log("该功能有待开发，但不影响上传，请放心使用！")
+            // this.$http.get('/removeUploadfileimg').then( (res) => {
+            //   console.log(res)
+            // })
           },
           handlePreview(file) {
             console.log(file);
