@@ -33,11 +33,6 @@ var createFolder = function (folder) {
 var uploadFolder = './upload'
 createFolder(uploadFolder)
 //通过filename属性定制
-var storage = multer.diskStorage({
-	destination:function(req,file,cb){
-		cb(null,uploadFolder)	//保存的路径
-	},
-	filename:function(req,file,cb){
     var d = new Date()
     var year = d.getFullYear()
     var month = d.getMonth()+1
@@ -46,13 +41,11 @@ var storage = multer.diskStorage({
     var minutes = d.getMinutes()
     var seconds = d.getSeconds()
     var now = year+month+day+hour+minutes+seconds
-    // console.log(year)
-    // console.log(month)
-    // console.log(day)
-    // console.log(hour)
-    // console.log(minutes)
-    // console.log(seconds)
-    // console.log(now)
+var storage = multer.diskStorage({
+	destination:function(req,file,cb){
+		cb(null,uploadFolder)	//保存的路径
+	},
+	filename:function(req,file,cb){
 		//将保存文件名设置为 字段名+时间戳+后缀（.jpeg/.png.....）
 		console.log(file.mimetype.split('/')[1])
 		cb(null,file.fieldname+'-'+now+'.'+file.mimetype.split('/')[1])
@@ -60,16 +53,41 @@ var storage = multer.diskStorage({
 })
 var upload = multer({storage:storage})
 //图片上传
+var uploadPath
 app.post('/uploadfile',upload.single('file'),function(req,res,next){
   res.header("Access-Control-Allow-Origin","*")
-  console.log(__dirname)//C:\Users\Administrator\Desktop\123456\graduation\server
-  console.log(__filename)//C:\Users\Administrator\Desktop\123456\graduation\server\app.js
-	console.log(req.file)
+  // console.log(__dirname)//C:\Users\Administrator\Desktop\123456\graduation\server
+  // console.log(__filename)//C:\Users\Administrator\Desktop\123456\graduation\server\app.js
+	// console.log(req.file)
 	res.json({
 		code:2,
 		message:"success",
     path:req.file.path
 	})
+  uploadPath = req.file.path
+  return uploadPath
+})
+app.get('/removeUploadfileimg',function(req,res,next){
+    // console.log(uploadPath.replace(/\\/g,'/').split('/')[1])
+    var path = uploadPath
+    fs.readdir(uploadFolder,function(err,files){
+      if (err) {
+        console.log(err)
+      }
+      files.forEach(function(file){
+        // console.log(file)
+        if (file == path) {
+          console.log(file)
+          fs.rmdir(path,function(err){
+            if (err) {
+              console.log("删除失败出现错误"+err)
+            }else{
+              console.log("删除成功!")
+            }
+          })
+        }
+      })
+    })
 })
 
 app.use('/users',router)    //将路由注册到/users的路径下

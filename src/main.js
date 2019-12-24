@@ -24,6 +24,6 @@ new Vue({
   components: { App },
   template: '<App/>',
   created() {
-    console.log()
+    // console.log(window.location.origin)
   }
 })

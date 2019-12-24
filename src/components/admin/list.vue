@@ -89,11 +89,12 @@
             width="230">
             </el-table-column>
             <el-table-column
+            prop="sceneLogo"
             label="景点图片"
             width="230">
-              <el-image
-              :src="scenimgpath">
-              </el-image>
+              <template slot-scope="scope">
+                <img :src="commonUtil.getImgPath(scope.row.sceneLogo)" style="width: 208px;height: 90px;"/>
+              </template>
             </el-table-column>
             <el-table-column
             prop='createData'
@@ -128,7 +129,7 @@
                   </el-col>
               </el-row>
               <el-row type="flex" justify="left" style="height: auto;">
-                  <el-col :span="8">
+                  <el-col :span="10">
                       <el-form-item label="景点图片:"> <!-- prop="sceneLogo" -->
                         <!-- <el-button type="primary">点击上传</el-button>
                         <el-input type="file" id="file" @click="file" ref="inputer" v-model="scene.sceneLogo"></el-input>
@@ -151,9 +152,10 @@
                           :on-remove="handleRemove"
                           :on-success="fileimg"
                           list-type="picture"
+                          ref="uploadscenimg"
                           v-model="scene.sceneLogo">
                           <el-button size="small" type="primary">点击上传</el-button>
-                          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb(上传一张即可)</div>
                         </el-upload>
                       </el-form-item>
                   </el-col>
@@ -454,6 +456,7 @@
           //景点编辑
           scenedit(index,row){
             console.log("景点编辑")
+            console.log(row._id)
           },
           //景点删除
           scenedel(index,row){
@@ -465,7 +468,7 @@
                   }).then(() => {
                     this.$http.get('/users/deleScene',{
                       params:{
-                        sceneName:row.title
+                        id:row._id
                       }
                     }).then((res) => {
                       if (res.data.code == 2) {
@@ -498,8 +501,9 @@
             this.$http.get('/users/sceneAll').then((res) => {
               console.log(res)
               _this.scenData = res.data.scenalldata
-              var href = res.data.href
-              console.log(this.commonUtil.getImgPath(res.data.scenalldata[0].sceneLogo))
+              // var href = res.data.href
+              // console.log(_this.scenData[0].sceneLogo)
+              // console.log(this.commonUtil.getImgPath(res.data.scenalldata[0].sceneLogo))
             })
           },
           //编辑按钮
@@ -548,6 +552,7 @@
                        message:'添加成功',
                        type:'success'
                      })
+                     this.$refs['uploadscenimg'].clearFiles()
                      this.scene.title = ''
                      this.scene.describe = ''
                      this.scene.sceneLogo = ''
@@ -563,6 +568,9 @@
           // 景点处理图片删除的操作
           handleRemove(file, fileList) {
             console.log(file, fileList);
+            this.$http.get('/removeUploadfileimg').then( (res) => {
+              console.log(res)
+            })
           },
           handlePreview(file) {
             console.log(file);

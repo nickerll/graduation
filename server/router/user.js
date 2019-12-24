@@ -2,11 +2,10 @@
 //引入中间件
 var express = require('express')
 var router = express.Router()
-var fs     = require('fs')
 var path   = require('path')
 var formidable = require('formidable')
-// var app = express()
-// app.use(upload.any())
+var objectId = require('mongodb').ObjectId
+var _id = objectId(_id)
 // 引入数据库表
 var User = require('../models/user') //存放数据的数据表
 var Admin = require('../models/admin') //存放数据的数据表
@@ -77,49 +76,25 @@ router.route('/sceneAll').get((req,res) => {
     })
   })
 })
-//图片上传
-// router.post('/uploadimg',multer({
-//   dest:'../upload/'
-// }).single('sceneimg'),function(req,res){
-//   console.log(multer)
-//   console.log(req.body)
-//   // fs.writeFile('../upload',img,function (err) {
-//   //     if (err) {
-//   //       console.log(err)
-//   //     }
-//   // })
-//   res.json({
-//     code:2,
-//     message:"上传成功!",
-//     // imgpath:img
-//   })
-// })
-// router.route('/uploadimg').post((req,res) => {
-  // console.log({query:req.query,data:req.params,json:req.body})
-  // var form = new formidable.IncomingForm()
-  // form.uploadDir = './upload' //设置文件上传存放地址
-  // form.parse(req,function(err,fields,files){
-  //   console.log(fields) //获取传的参数信息
-  //   console.log(files)  //获取图片信息
-  // })
-  // console.log(req.file)
-  // if (req.file.length == 0) {
-  //     res.render('error',{message:"上传文件不能为空"})
-  //     return
-  // }
-// })
+//
+  var d = new Date()
+  var year = d.getFullYear()
+  var month = d.getMonth()+1
+  var day = d.getDate() < 10?'0'+d.getDate():''+d.getDate()
+  var hour = d.getHours()
+  var minutes = d.getMinutes()
+  var seconds = d.getSeconds()
+  var now = year+'-'+month+'-'+day+'-'+' '+hour+':'+minutes+':'+seconds
 //景点展示-添加景点
 router.route('/addScene').post((req,res) => { //定义接口为/addScene以及请求方式为get
-  console.log(req.headers.origin)
-  console.log(req.body.sceneLogo)
-  var img = req.body.scenimgpath
+  // console.log(req.headers.origin)
+  // console.log(req.body.sceneLogo)
   var addscen = new Scene({  //新建一个对象 把表单中的对应的数据赋值到对应的字段中
     title:req.body.title,
     sceneLogo:req.body.sceneLogo,
     describe:req.body.describe,
-    createData:new Date()
+    createData:now
   })
-  console.log(new Date())
   addscen.save((err,data) => {  //将数据添加到数据库中
     if (err) {  //如果错误
       console.log(err)  //在终端输出错误
@@ -135,16 +110,16 @@ router.route('/addScene').post((req,res) => { //定义接口为/addScene以及�
     message:"添加成功!",
     imgcon:[{
       code:2,
-      imgpath:img,
       message:"上传成功!"
     }],
-    href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
+    // href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
     scenecon:addscen
   })
 })
 //景点展示-删除景点
 router.route('/deleScene').get((req,res) => {
-  Scene.deleteOne(req.params).then((delsc) => {
+  console.log({query:req.query,data:req.params,json:req.body})
+  Scene.deleteOne({_id:req.query.id}).then((delsc) => {
     console.log(delsc)
     resData.code = 2
     resData.message = '删除成功'
@@ -191,7 +166,7 @@ router.route('/humanAll').post((req,res) => {
 })
 //删除对应的人文地理内容
 router.route('/humanDel').post((req,res) => {
-  Human.deleteOne().then((data) => {
+  Human.deleteOne({_id:req.query.id}).then((data) => {  //根据id删除对应的内容
     resData.code = 2
     resData.message = "删除成功"
     res.json(resData)
@@ -224,7 +199,7 @@ router.route('/allNews').post((req,res) => {
 })
 //删除对应的新闻内容
 router.route('/deleteNews').post((req,res) => {
-  News.deleteOne().then((data) => {
+  News.deleteOne({_id:req.query.id}).then((data) => { //根据id删除
     resData.code = 2
     resData.message = "删除成功"
     res.json(resData)
@@ -255,5 +230,6 @@ module.exports = router
 
 
 /**
- * 存在问题:除删除用户之外其他的内容删除的时候不可以根据名称删除,因为用户注册的时候用户名是唯一的,所以可以根据用户名删除用户;而景点,人文等名称是可以有一样的,所以在删除的时候应该根据唯一标识id来删除.
+ * 存在问题:除删除用户之外其他的内容删除的时候不可以根据名称删除,因为用户注册的时候用户名是唯一的,所以可以根据用户名删除用户;而景点,人文等名称是可以有一样的,所以在删除的时候应该根据唯一标识id来删除.  ***已解决***
+ * 从后端接口中请求图片路径时要将webpack.dev.conf.js中的contentBase注释掉 前端页面才能根据端口号请求到图片
  * */
