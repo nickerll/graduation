@@ -153,6 +153,7 @@
                           :on-success="fileimg"
                           list-type="picture"
                           ref="uploadscenimg"
+                          :file-list="fileList"
                           v-model="scene.sceneLogo">
                           <el-button size="small" type="primary">点击上传</el-button>
                           <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb(上传一张即可)</div>
@@ -395,7 +396,7 @@
             scenData:[],
             humanData:[],
             newsData:[],
-            scenimgpath:""
+            fileList:[{}]
           };
         },
         mounted() {
@@ -461,7 +462,10 @@
             this.$http.post('/users/editScene',{id:row._id}).then((res) => {  //点击景点编辑的时候根据id在数据库中找到对应的值
               console.log(res)
               // this.$refs['uploadscenimg'].value = this.commonUtil.getImgPath(res.data.data.sceneLogo)
+              _this.fileList[0].name = res.data.data.sceneLogo.replace(/\\/g,'/').split('/')[1]
+              _this.fileList[0].url = this.commonUtil.getImgPath(res.data.data.sceneLogo)
               _this.scene = res.data.data
+              console.log(this.fileList)
             })
             // this.scene.sceneLogo = ''
             this.scenTable = false
@@ -588,13 +592,22 @@
           },
           //景点新增按钮
           addscen(){
+            var _this = this
             if (this.scbtn == true) {
               this.scbtn = false
               this.scenTable = true
+              this.$refs['uploadscenimg'].clearFiles()
+              _this.scene = {}
+              _this.fileList = [{}]
             } else{
               this.scbtn = true
               this.scenTable = false
+              _this.scene = {}
+              _this.fileList = [{}]
             }
+            var a = document.querySelectorAll('.el-upload-list--picture li')
+            var Ul = document.querySelectorAll('.el-upload-list--picture')[0]
+            a[0].remove()
           },
           //景点关闭按钮
           CloseScen(){
@@ -606,7 +619,7 @@
 
         },
         updated() {
-
+          
         }
   }
 </script>
