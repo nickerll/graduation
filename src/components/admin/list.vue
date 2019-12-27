@@ -454,7 +454,7 @@
           sceneaddson(){
               console.log('景点添加子类')
           },
-          //景点编辑
+          //景点编辑   //问题第二次点击的时候无图片 导致数据修改出现问题
           scenedit(index,row){
             var _this = this
             console.log("景点编辑")
@@ -553,17 +553,16 @@
               })
             })
           },
-          //景点展示提交
+          //景点展示提交     //提交的时候先在scene数据表中找id如果有点提交的时候是修改数据，如果没有就是添加数据
           sceneSubmit(){
             var _this = this
-            console.log(this.scene.title)
             this.$refs.sceneForm.validate((valid) => {
               if (valid) {
                    this.$http.post('/users/addScene',this.scene).then((res) => {
                      console.log(res.data)
                      this.$notify({
                        title:'提示',
-                       message:'添加成功',
+                       message:res.data.message,
                        type:'success'
                      })
                      this.$refs['uploadscenimg'].clearFiles()
@@ -575,7 +574,11 @@
                      this.showScene()
                    })
               } else{
-
+                  this.$notify({
+                    title:'提示',
+                    message:"添加失败",
+                    type:'error'
+                  })
               }
             })
           },
@@ -590,24 +593,25 @@
           handlePreview(file) {
             console.log(file);
           },
-          //景点新增按钮
+          //景点新增按钮   //bug 点完编辑再点新增图片上传问题
           addscen(){
+            this.$refs['uploadscenimg'].clearFiles()
             var _this = this
             if (this.scbtn == true) {
               this.scbtn = false
               this.scenTable = true
               this.$refs['uploadscenimg'].clearFiles()
               _this.scene = {}
-              _this.fileList = [{}]
+              // _this.fileList = [{}]
             } else{
               this.scbtn = true
               this.scenTable = false
               _this.scene = {}
-              _this.fileList = [{}]
+              // _this.fileList = [{}]
             }
-            var a = document.querySelectorAll('.el-upload-list--picture li')
-            var Ul = document.querySelectorAll('.el-upload-list--picture')[0]
-            a[0].remove()
+            // var a = document.querySelectorAll('.el-upload-list--picture li')
+            // var Ul = document.querySelectorAll('.el-upload-list--picture')[0]
+            // a[0].remove()
           },
           //景点关闭按钮
           CloseScen(){

@@ -87,30 +87,60 @@ router.route('/sceneAll').get((req,res) => {
   var now = year+'-'+month+'-'+day+' '+hour+':'+minutes+':'+seconds //日期拼接  年-月-日 时:分:秒
 //景点展示-添加景点
 router.route('/addScene').post((req,res) => { //定义接口为/addScene以及请求方式为get
-  // console.log(req.headers.origin)
-  // console.log(req.body.sceneLogo)
-  var addscen = new Scene({  //新建一个对象 把表单中的对应的数据赋值到对应的字段中
-    title:req.body.title,
-    sceneLogo:req.body.sceneLogo,
-    describe:req.body.describe,
-    createData:now
-  })
-  addscen.save((err,data) => {  //将数据添加到数据库中
-    if (err) {  //如果错误
-      console.log(err)  //在终端输出错误
-    }
-    if (data) { //如果有值
-      console.log("新添的数据")
-      console.log(data) //在终端输出这条数据
-      console.log('-----------------------')
-    }
-  })
-  res.json({
-    code:2,
-    message:"添加成功!",
-    // href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
-    scenecon:addscen
-  })
+  console.log(sceneId)
+  if(sceneId != '' || sceneId != undefined){
+    Scene.findOne({_id:sceneId},(err) => {
+      if(err){
+        console.log(err)
+        var addscen = new Scene({  //新建一个对象 把表单中的对应的数据赋值到对应的字段中
+          title:req.body.title,
+          sceneLogo:req.body.sceneLogo,
+          describe:req.body.describe,
+          createData:now
+        })
+        addscen.save((err,data) => {  //将数据添加到数据库中
+          if (err) {  //如果错误
+            console.log(err)  //在终端输出错误
+          }
+          if (data) { //如果有值
+            console.log("新添的数据")
+            console.log(data) //在终端输出这条数据
+            console.log('-----------------------')
+          }
+        })
+        res.json({
+          code:2,
+          message:"添加成功!",
+          scenecon:addscen
+        })
+      }
+    }).then((data) => {
+      console.log('----------根据id找到的数据---------------')
+      console.log(data)
+      console.log('----------------------------------------')
+      var editsc = {
+        title:req.body.title,
+        sceneLogo:req.body.sceneLogo,
+        describe:req.body.describe,
+        updateTime:now
+      }
+      Scene.update(data,{$set:editsc}).then((upda) => {
+        console.log("-------修改后的数据---------")
+        console.log(editsc)
+        console.log(upda)
+        console.log('---------------------------')
+        res.json({
+          code:2,
+          message:'数据修改成功！',
+          data:upda
+        })
+      })
+    })
+  }else{
+    
+  }
+  sceneId = ''
+  return sceneId
 })
 //景点展示-删除景点
 router.route('/deleScene').get((req,res) => {
@@ -123,6 +153,7 @@ router.route('/deleScene').get((req,res) => {
   })
 })
 //景点展示-编辑景点
+var sceneId
 router.route('/editScene').post((req,res) => {
   console.log({query:req.query,data:req.params,json:req.body})
   Scene.findOne({_id:req.body.id}).then((data) => {
@@ -133,7 +164,8 @@ router.route('/editScene').post((req,res) => {
       data:data
     })
   })
-  Scene.update().then((res) => {})
+  sceneId = req.body.id
+  return sceneId
 })
 //注册
 router.route('/Register').post((req,res) => {  //注册路由

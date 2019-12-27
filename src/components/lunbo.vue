@@ -1,7 +1,7 @@
 <template lang="">
     <div class="lunbo">
         <transition-group tag="div">
-            <div v-for="(item,index) in img" :key="index" :style="{opacity:(index+1) == n ? '1':'0'}" class="active">
+            <div v-for="(item,index) in img" :key="item" :style="{opacity:(index+1) == n ? '1':'0'}" class="active">
                 <img :src="item"/>
             </div>
         </transition-group>
