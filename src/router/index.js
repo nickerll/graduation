@@ -46,6 +46,9 @@ export default new Router({
       name:'list',
       component:reslove => {
         require(['@/components/admin/list'],reslove)
+      },
+      meta:{
+        loginRequest:true //校验判断的路由
       }
     }
   ]

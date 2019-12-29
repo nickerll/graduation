@@ -25,7 +25,7 @@
                 </el-col>
             </el-row>
             <el-row type="flex" justify="center">
-                <el-col :span="4">
+                <el-col :span="6">
                     <el-form-item>
                        <el-button type="primary" icon="el-icon-upload" @click="submit">登录</el-button>
                        <el-button icon="el-icon-upload" @click="register">注册</el-button>
