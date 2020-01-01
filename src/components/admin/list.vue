@@ -208,8 +208,11 @@
               prop="humanimg"
               label="人文图片"
               width="180">
-              <el-image :src="human.humanimg">
-              </el-image>
+              <!-- <el-image :src="human.humanimg">
+              </el-image> -->
+              <template slot-scope="scope">
+                <img :src="commonUtil.getImgPath(scope.row.humanimg)" style="width: 160px;height: 90px;"/>
+              </template>
               </el-table-column>
               <el-table-column
               prop="humandesc"
@@ -258,7 +261,7 @@
               </el-row>
               <el-row type="flex" justify="left">
                 <el-col :span="5">
-                  <el-button type="primary" icon="el-icon-upload">提交</el-button>
+                  <el-button type="primary" icon="el-icon-upload" @click="humsub">提交</el-button>
                   <el-button type="info" icon="el-icon-close" @click="humclose">关闭</el-button>
                 </el-col>
               </el-row>
@@ -289,8 +292,11 @@
             prop="newsimg"
             label="新闻图片"
             width="180">
-            <el-image :src="news.newsimg">
-            </el-image>
+            <!-- <el-image :src="news.newsimg">
+            </el-image> -->
+            <template slot-scope="scope">
+                <img :src="commonUtil.getImgPath(scope.row.newsimg)" style="width: 160px;height: 90px;"/>
+              </template>
             </el-table-column>
             <el-table-column
             prop="releaseCon"
@@ -307,14 +313,14 @@
                 <template slot-scope="scope">
                   <el-button
                     size="mini"
-                    @click="humanedit(scope.$index, scope.row)">编辑</el-button>
+                    @click="newsedit(scope.$index, scope.row)">编辑</el-button>
                   <el-button
                   size="mini"
                   type="danger"
-                  @click="humandel(scope.$index, scope.row)">删除</el-button>
+                  @click="newsdel(scope.$index, scope.row)">删除</el-button>
                   <el-button
                   size="mini"
-                  @click="humanaddson(scope.$index, scope.row)">增加子类</el-button>
+                  @click="newsaddson(scope.$index, scope.row)">增加子类</el-button>
                 </template>
             </el-table-column>
           </el-table>
@@ -353,7 +359,7 @@
             </el-row>
             <el-row type="flex" justify="left">
               <el-col :span="5">
-                <el-button type="primary" icon="el-icon-upload">提交</el-button>
+                <el-button type="primary" icon="el-icon-upload" @click="newsSub">提交</el-button>
                 <el-button type="info" icon="el-icon-close" @click="newscolse">关闭</el-button>
               </el-col>
             </el-row>
@@ -402,12 +408,69 @@
         mounted() {
           this.showUser()
           this.showScene()
+          this.humanAll()
+          this.newsAll()
         },
         methods:{
           fileimg(file,row){
             console.log(file)
             this.scene.sceneLogo = file.path
             console.log('success')
+          },
+          //新闻全部
+          newsAll(){
+            this.$http.post('/users/allNews').then((res) => {
+              console.log(res)
+              this.newsData = res.data
+            })
+          },
+          //新闻编辑
+          newsedit(){},
+          //新闻删除
+          newsdel(index,row){
+            this.$confirm('是否删除该条信息','提示',{
+              confirmButtonText:'确定',
+              cancelButtonText:'取消',
+              type:'warning'
+            }).then(() => {
+              this.$http.post('/users/deleteNews?id='+row._id).then((res) => {
+                console.log(res)
+                if(res.status == 200 && res.statusText == "OK"){
+                  this.$message({
+                    type:'success',
+                    message:res.data.message
+                  })
+                  this.newsAll()
+                }
+              })
+            }).catch(() => {
+              this.$message.info('已取消删除')
+            })
+          },
+          //新闻添加子类
+          newsaddson(){},
+          //新闻提交
+          newsSub(){
+            this.$http.post('/users/addNews',this.news).then((res) => {
+              console.log(res)
+              if(res.status == 200 && res.statusText == "OK"){
+                this.$notify({
+                  type:'success',
+                  message: '新增成功',
+                  title:'提示'
+                })
+                this.newsAll()
+                this.newsform = false
+                this.newstab = true
+                this.newsbtn = true
+              }else{
+                this.$notify({
+                  type:'error',
+                  title:'提示',
+                  message:'error'
+                })
+              }
+            })
           },
           // 新闻新增按钮
           newsaddbtn(){
@@ -439,15 +502,64 @@
               this.humbtn = true
             }
           },
+          //人文提交按钮
+          humsub(){
+            this.$http.post('/users/addhuman',this.human).then((res) => {
+              console.log(res)
+              if(res.status == 200 && res.statusText == "OK"){
+                this.$notify({
+                  title:'提示',
+                  message:'新增成功',
+                  type:'success'
+                })
+                this.humanAll()
+                this.humbtn = true
+                this.humform = false
+                this.humtab = true
+              }else{
+                this.$notify({
+                  type:'error',
+                  message:'error',
+                  title:'提示'
+                })
+              }
+            })
+          },
+          humanAll(){
+            this.$http.post('/users/humanAll').then((res) => {
+              console.log(res)
+              this.humanData = res.data
+            })
+          },
           //人文关闭按钮
           humclose(){
             this.humtab = true
             this.humform = false
+            this.humbtn = true
           },
           //人文编辑
           humanedit(){},
           //人文删除
-          humandel(){},
+          humandel(index,row){
+            this.$confirm('是否删除该条信息','提示',{
+              confirmButtonText:'确定',
+              cancelButtonText:'取消',
+              type:'warning'
+            }).then(() => {
+              this.$http.post('/users/humanDel?id='+row._id).then((res) => {
+                console.log(res)
+                if(res.status == 200 && res.statusText == "OK"){
+                  this.$message({
+                    type:'success',
+                    message:res.data.message
+                  })
+                  this.humanAll()
+                }
+              })
+            }).catch(() => {
+              this.$message.info('已取消删除')
+            })
+          },
           //人文增加子类
           humanaddson(){},
           //景点添加子类
@@ -629,6 +741,9 @@
 </script>
 
 <style>
+.el-table--scrollable-x .el-table__body-wrapper{
+  overflow-x:hidden;
+}
   .el-button+.el-input{
     opacity: 0;
     width: 98px;
@@ -670,7 +785,8 @@
     width: 400px;
   }
   .el-textarea__inner{
-    height: 400px;
+    height: 200px;
+    width: 400px;
   }
   .el-form>.el-row{
     background: none;

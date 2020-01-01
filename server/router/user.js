@@ -208,9 +208,11 @@ router.route('/humanAll').post((req,res) => {
 //删除对应的人文地理内容
 router.route('/humanDel').post((req,res) => {
   Human.deleteOne({_id:req.query.id}).then((data) => {  //根据id删除对应的内容
-    resData.code = 2
-    resData.message = "删除成功"
-    res.json(resData)
+    res.json({
+      code:2,
+      message:"删除成功！",
+      data:resData
+    })
   })
 })
 //添加人文地理
@@ -225,6 +227,7 @@ router.route('/addhuman').post((req,res) => {
       console.log(err)
     }
     if (data) {
+      console.log('----------人文地理--------------')
       console.log('humanadd contain:'+data)
       console.log('-------------------------')
     }
@@ -241,16 +244,18 @@ router.route('/allNews').post((req,res) => {
 //删除对应的新闻内容
 router.route('/deleteNews').post((req,res) => {
   News.deleteOne({_id:req.query.id}).then((data) => { //根据id删除
-    resData.code = 2
-    resData.message = "删除成功"
-    res.json(resData)
+    res.json({
+      data:resData,
+      code:2,
+      message:'删除成功！'
+    })
   })
 })
 //添加新闻内容
 router.route('/addNews').post((req,res) => {
   var news = new News({
-    title:req.body.title,
-    releaseDate:req.body.releaseData,
+    newsTitle:req.body.newsTitle,
+    releaseDate:req.body.releaseDate,
     releaseCon:req.body.releaseCon,
     newsimg:req.body.newsimg
   })
