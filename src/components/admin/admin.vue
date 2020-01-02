@@ -70,6 +70,7 @@ export default {
                                     message:'欢迎你,' + this.user.name + '!',
                                     duration:3000
                                 })
+                                sessionStorage.setItem("token",this.user.name)
                                 this.$router.replace('/admin/list')
                             })
                         } else {
