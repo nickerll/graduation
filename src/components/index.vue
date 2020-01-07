@@ -1,7 +1,12 @@
 <template>
   <div>
       <headerNav></headerNav>
-      <lunbo></lunbo>
+      <!-- <lunbo></lunbo> -->
+      <div class="lunbo">
+        <div style="background: #dfdfdf;;position: absolute;left: 0;height: 100%;z-index: 10;width: 115px;"></div>
+        <!-- <video src="../assets/VID_20200107_213647.mp4" autoplay loop width="100%"></video> -->
+        <div style="background: #dfdfdf;position: absolute;right: 0;top:0;height: 100%;z-index: 10;width: 115px;"></div>
+      </div>
       <div class="jianjie">
           <div class="jianWord">
               <h1>怀旧古风爱好者</h1>
@@ -13,7 +18,12 @@
             <div class="secon">
               <h1>古风美景</h1>
               <div class="scenbeau">
-
+                <div class="scenbecon" v-if="index<3" v-for="(item,index) in scenelist">
+                  <div class="scimg">
+                      <img :src="commonUtil.getImgPath(item.sceneLogo)" title="点击查看更多详情" alt="">
+                  </div>
+                  <p>{{item.title}}</p>
+                </div>
               </div>
             </div>
           </div>
@@ -37,9 +47,7 @@
             </div>
           </div>
           <!--  -->
-
       </div>
-      
   </div>
 </template>
 <script>
@@ -47,13 +55,71 @@ import headerNav from './header'
 import lunbo from './lunbo'
 export default {
   components:{headerNav,lunbo},
+  data(){
+    return{
+      msg:'',
+      scenelist:[]
+    }
+  },
   methods:{
         
+    },
+    mounted() {
+      this.$http.get('/users/sceneAll').then((res) => {
+        console.log(res)
+        if (res.status == 200 && res.statusText == "OK") {
+          this.scenelist = res.data.scenalldata
+        } else {
+          
+        }
+      })
+    },
+    created() {
+      
+    },
+    updated() {
+      
     },
     
 }
 </script>
 <style lang="">
+  .lunbo{
+    max-width: 1920px;
+    min-width: 1200px;
+    height: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .scenbecon{
+    width: 30%;
+    float: left;
+    margin-right: 20px;
+  }
+  .scimg{
+    width: 100%;
+    height: 209.25px;
+    overflow: hidden;
+  }
+  .scenbecon img{
+    width: 100%;
+    transition: all 0.5s;
+  }
+  .scenbecon img:hover{
+    transform: scale(1.2)
+  }
+  .scenbecon p{
+    width: 100%;
+    text-align: center;
+    font-size: 20px;
+    color: white;
+    margin-top: 20px;
+  }
+  .scenbeau{
+    width: 1200px;
+    height: auto;
+    margin: 0 auto;
+  }
 .plan{
   width:100%;
   height:650px;
@@ -78,7 +144,7 @@ export default {
   }
   .scienc{
     width:100%;
-    height:730px;
+    height:540px;
     background:url(../../static/images/bg1.jpg);
     background-size:cover;
     position:relative;
