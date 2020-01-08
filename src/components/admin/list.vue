@@ -176,7 +176,8 @@
               <el-row type="flex" justify="left">
                   <el-col :span="7">
                       <el-form-item>
-                         <el-button type="primary" icon="el-icon-upload" @click="sceneSubmit">提交</el-button>
+                         <el-button v-if='chenge == false' type="primary" icon="el-icon-upload" @click="sceneSubmit">提交</el-button>
+                         <el-button v-else type="primary" icon="el-icon-upload" @click="sceneChange">修改</el-button>
                          <el-button type="info" icon="el-icon-close" plain @click="CloseScen">关闭</el-button>
                       </el-form-item>
                   </el-col>
@@ -402,7 +403,8 @@
             scenData:[],
             humanData:[],
             newsData:[],
-            fileList:[{}]
+            fileList:[{}],
+            chenge:false
           };
         },
         mounted() {
@@ -570,6 +572,7 @@
           scenedit(index,row){
             var _this = this
             console.log("景点编辑")
+            this.chenge = true
             // console.log(row._id)
             this.$http.post('/users/editScene',{id:row._id}).then((res) => {  //点击景点编辑的时候根据id在数据库中找到对应的值
               console.log(res)
@@ -582,6 +585,28 @@
             // this.scene.sceneLogo = ''
             this.scenTable = false
             this.scbtn = true
+          },
+          //景点编辑修改提交按钮
+          sceneChange(){
+            this.$http.post('/users/chengeScene',this.scene).then((res) => {
+              console.log(res)
+              if (res.status == 200 && res.statusText == "OK") {
+                this.$notify({
+                  type:'success',
+                  title:'提示',
+                  message:res.data.message
+                })
+                this.scenTable = true
+                this.scbtn = false
+                this.showScene()
+              } else {
+                this.$notify({
+                  type:'error',
+                  title:'提示',
+                  message:'error'
+                })
+              }
+            })
           },
           //景点删除
           scenedel(index,row){
@@ -707,6 +732,7 @@
           },
           //景点新增按钮   //bug 点完编辑再点新增图片上传问题
           addscen(){
+            this.chenge = false
             this.$refs['uploadscenimg'].clearFiles()
             var _this = this
             if (this.scbtn == true) {
