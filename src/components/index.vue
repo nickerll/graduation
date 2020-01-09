@@ -29,10 +29,16 @@
           </div>
           <!-- 景点展示结束 -->
           <!-- 人文地理 -->
+          <div style="clear: both;"></div>
           <div class="human">
             <div class="humcon">
-
+              <h1>人文地理</h1>
+              <div class="humdiv" v-if="index<2" v-for="(item,index) in humList">
+                <b>{{item.title}}</b>
+                <p>{{item.humandesc}}</p>
+                <span>了解更多</span>
             </div>
+              </div>
           </div>
           <!-- 人文地理结束 -->
           <!-- 新闻发布 -->
@@ -58,7 +64,8 @@ export default {
   data(){
     return{
       msg:'',
-      scenelist:[]
+      scenelist:[],
+      humList:[]
     }
   },
   methods:{
@@ -69,6 +76,14 @@ export default {
         console.log(res)
         if (res.status == 200 && res.statusText == "OK") {
           this.scenelist = res.data.scenalldata
+        } else {
+          console.log('error')
+        }
+      }),
+      this.$http.post('/users/humanAll').then((res) => {
+        console.log(res.data)
+        if (res.status == 200 && res.statusText == "OK") {
+          this.humList = res.data
         } else {
           
         }
@@ -141,6 +156,49 @@ export default {
     background:url(../../static/images/bg2.jpg);
     background-size:cover;
     background-attachment:fixed;
+    margin-top: 230px;
+  }
+  .humcon{
+    width: 1200px;
+    margin: 0 auto;
+  }
+  .humcon h1{
+    text-align: center;
+    font-size: 35px;
+    letter-spacing: 2px;
+    color: brown;
+    position: relative;
+    top: 30px;
+    margin-bottom: 55px;
+  }
+  .humdiv{
+    width: 456px;
+    height: 370px;
+    background: rgba(255,255,255,0.7);
+    padding:50px 30px;
+    box-sizing: border-box;
+  }
+  .humdiv b{
+    font-size: 25px;
+    color: brown;
+  }
+  .humdiv p{
+    width: 100%;
+    height: 175px;
+    margin-top: 15px;
+    font-size: 15px;
+    color: #8b8383;
+  }
+  .humdiv span{
+    display: inline-block;
+    width: 86px;
+    height: 46px;
+    background: #c22337;
+    text-align: center;
+    line-height: 46px;
+    color: white;
+    font-size: 15px;
+    margin-top: 15px;
   }
   .scienc{
     width:100%;
