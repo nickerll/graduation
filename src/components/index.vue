@@ -44,6 +44,10 @@
           <!-- 新闻发布 -->
           <div class="news">
             <div class="newscon">
+              <h1>新闻资讯</h1>
+              <div class="newscontain">
+                <p></p>
+              </div>
             </div>
           </div>
           <!-- 新闻发布结束 -->
@@ -158,7 +162,7 @@ export default {
     background-attachment:fixed;
     margin-top: 230px;
   }
-  .humcon{
+  .humcon,.newscon{
     width: 1200px;
     margin: 0 auto;
   }
@@ -258,5 +262,19 @@ export default {
     text-indent: 2em;
     font-size: 10px;
     line-height: 35px;
+  }
+  .newscon{
+    overflow: hidden;
+  }
+  .newscon h1{
+    text-align: center;
+    color: white;
+    font-size: 35px;
+    letter-spacing: 3px;
+    margin-top: 50px;
+  }
+  .newscontain{
+    width: 100%;
+    margin-top: 50px;
   }
 </style>
