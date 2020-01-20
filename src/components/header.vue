@@ -36,6 +36,13 @@ export default {
     },
     mounted() {
         this.word = data.nav.words
+        
+        var name = JSON.parse(sessionStorage.login)
+        if (name != '' || name != undefined) {
+          this.user
+        } else{
+          
+        }
     },
     methods:{
         sendlink(id,index){

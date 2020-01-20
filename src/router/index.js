@@ -50,6 +50,16 @@ export default new Router({
       meta:{
         loginRequest:true //校验判断的路由
       }
+    },
+    {
+      path:'/messagelist',
+      name:'messagelist',
+      component:resolve => {require(['@/components/messageList'],resolve)}
+    },
+    {
+      path:'/mesdetail',
+      name:'mesdetail',
+      component:resolve => {require(['@/components/mesdetail'],resolve)}
     }
   ]
 })

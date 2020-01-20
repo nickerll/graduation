@@ -68,6 +68,7 @@ export default {
                                     message:'欢迎你,' + this.user.name + '!',
                                     duration:3000
                                 })
+                                sessionStorage.login = JSON.stringify(res.data)
                                 this.$router.replace('/')
                             })
                         } else {
