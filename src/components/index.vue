@@ -3,7 +3,7 @@
     <headerNav></headerNav>
     <!-- <lunbo></lunbo> -->
     <div class="lunbo">
-      <div style="background: #dfdfdf;;position: absolute;left: 0;height: 100%;z-index: 10;width: 115px;"></div>
+      <div style="background: #dfdfdf;position: absolute;left: 0;height: 100%;z-index: 10;width: 115px;"></div>
       <!-- <video src="../assets/VID_20200107_213647.mp4" autoplay loop width="100%"></video> -->
       <div style="background: #dfdfdf;position: absolute;right: 0;top:0;height: 100%;z-index: 10;width: 115px;"></div>
     </div>

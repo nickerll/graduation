@@ -37,6 +37,7 @@
     </div>
 </template>
 <script>
+  import {mapMutations} from 'vuex'
 export default {
     data() {
         return {
@@ -56,6 +57,7 @@ export default {
         }
     },
     methods: {
+        ...mapMutations(['setUser']),
         submit:function(){
            this.$refs.loginForm.validate((valid) => {    //validate表单验证的一个方法
                if(valid){
@@ -63,12 +65,13 @@ export default {
                        if(res.data){
                        //dispatch采用promise链式调用
                             this.$store.dispatch('login',this.user).then(() => {
+                                this.setUser(this.user)
                                 this.$notify({               //$notify是element-ui中的一个通知弹框方法
                                     type:'success',
                                     message:'欢迎你,' + this.user.name + '!',
                                     duration:3000
                                 })
-                                sessionStorage.login = JSON.stringify(res.data)
+                                // sessionStorage.login = JSON.stringify(res.data)
                                 this.$router.replace('/')
                             })
                         } else {
