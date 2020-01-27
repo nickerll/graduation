@@ -9,7 +9,7 @@
         </el-col>
         <el-col class="navright" :span="8">
           <el-col :span="12">
-            <span v-if="user">
+            <span v-if="JSON.stringify(user) != '{}' ">
               <span class="welcome">欢迎你！{{ user.name }}</span>
               <el-button class="login" type="warning" @click="logout">注销</el-button>
             </span>
@@ -34,16 +34,6 @@ export default {
   },
   mounted() {
     this.word = data.nav.words;
-    console.log(this.user);
-    if(sessionStorage.getItem('$user') != '' || sessionStorage.getItem('$user') != undefined){
-      // this.user = sessionStorage.getItem('$user')
-    }
-    // var name = JSON.parse(sessionStorage.login)
-    // if (name != '' || name != undefined) {
-    //   this.user
-    // } else{
-
-    // }
   },
   methods: {
     sendlink(id, index) {
@@ -63,7 +53,7 @@ export default {
   },
   computed: {
     user() {
-      return this.$store.getters.getUser;
+      return this.$store.state.user;
     }
   }
 };

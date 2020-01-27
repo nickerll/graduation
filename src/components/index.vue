@@ -45,7 +45,15 @@
       <div class="news">
         <div class="newscon">
           <h1>新闻资讯</h1>
-          <div class="newscontain"><p></p></div>
+          <div class="newscontain">
+            <div class="marquee">
+              <div class="marquee_box" ref="marquee_box">
+                <ul class="marquee_list" :class="{marquee_top:animate}">
+                    <li v-for="(item,index) in list" :key="index">{{item}}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <!-- 新闻发布结束 -->
@@ -64,12 +72,32 @@ export default {
     return {
       msg: '',
       scenelist: [],
-      humList: []
+      humList: [],
+      list:[
+      '1111111111111111111',
+      '22222222222222222222',
+      '333333333333333333333',
+      '4444444444444444444',
+      '5555555555555555555',
+      '666666666666666666',
+      '777777777777777',
+      '888888888888888888'
+      ],
+      animate:false,
+      showNum:4
     };
   },
   methods: {
     scmessage(id) {
       this.$router.push('/mesdetail?id=' + id);
+    },
+    showMarquee(){
+      this.animate = true
+      this.list.push(this.list[0])
+      setTimeout(() => {
+        this.list.shift()
+        this.animate = false
+      }, 1000);
     }
   },
   mounted() {
@@ -89,7 +117,12 @@ export default {
         }
       });
   },
-  created() {},
+  created() {
+    setInterval(this.showMarquee,2000)
+  },
+  mounted() {
+    this.$refs.marquee_box.style.height = this.showNum * 30 + 'px'
+  },
   updated() {}
 };
 </script>
@@ -268,5 +301,49 @@ export default {
 .newscontain {
   width: 100%;
   margin-top: 50px;
+}
+
+.marquee {
+  width: 100%;
+  /* height: 200px; */
+  align-items: center;
+  color: #3a3a3a;
+  background-color: white;
+  display: flex;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.marquee_title {
+  padding: 0 20px;
+  height: 21px;
+  font-size: 14px;
+  border-right: 1px solid #d8d8d8;
+  align-items: center;
+}
+.marquee_box {
+  display: block;
+  position: relative;
+  width: 65%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+.marquee_list {
+  display: block;
+  position: absolute;
+  top: 0px;
+  left: 0;
+}
+.marquee_top {
+  transition: all 1s;
+  margin-top: -30px;
+}
+.marquee_list li {
+  height: 30px;
+  line-height: 30px;
+  font-size: 14px;
+  padding-left: 20px;
+}
+.marquee_list li span {
+  padding: 0 2px;
 }
 </style>

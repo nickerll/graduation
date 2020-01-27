@@ -6,8 +6,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   //全局变量
   state: {
-    user: ''
-    // user:JSON.parse(sessionStorage.getItem('$user')) || {} //保存用户登录后基本信息
+    // user: ''
+     user:JSON.parse(sessionStorage.getItem('$user')) || {} //保存用户登录后基本信息
   },
   //获取登录信息
   getters: {
@@ -16,9 +16,7 @@ const store = new Vuex.Store({
     }
   },
   actions: {
-    // setUser({ commit },item){
-    //   commit('setUser',item)
-    // }
+    
     login(context, payload) {
       context.commit('login', payload)
     },
