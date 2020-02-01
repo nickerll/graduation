@@ -11,6 +11,9 @@ Axios.defaults.baseURL = "http://localhost:3000"
 Vue.prototype.$http = Axios
 import store from './vuex'
 import commonUtil from './common.js'
+import qs from 'qs'
+
+Vue.prototype.qs = qs
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
@@ -22,7 +25,7 @@ router.beforeEach((to, from, next) => {
   console.log(from)
   // to and from are both route objects. must call `next`.
   if (to.meta.loginRequest) { //判断即将要进入的路由对象中meta中的loginrequest为true，进行拦截
-    if (sessionStorage.getItem('token')) { //判断本地存储中是否有user数据
+    if (sessionStorage.getItem('$user')) { //判断本地存储中是否有user数据
       next() //表示已经登录
     } else {
       console.log(to.fullPath)

@@ -18,10 +18,10 @@
       <!-- 景点展示 -->
       <div class="scienc">
         <div class="secon">
-          <h1>古风美景</h1>
+          <h1>古风美景<span @click="gomessagelist" class="oldscmore">more <i class="el-icon-arrow-right"></i></span></h1>
           <div class="scenbeau">
             <div class="scenbecon" v-if="index < 3" v-for="(item, index) in scenelist">
-              <div class="scimg" @click="scmessage(item.id)"><img :src="commonUtil.getImgPath(item.sceneLogo)" title="点击查看更多详情" alt="" /></div>
+              <div class="scimg" @click="scmessage(item._id)"><img :src="commonUtil.getImgPath(item.sceneLogo)" title="点击查看更多详情" alt="" /></div>
               <p>{{ item.title }}</p>
             </div>
           </div>
@@ -32,11 +32,11 @@
       <div style="clear: both;"></div>
       <div class="human">
         <div class="humcon">
-          <h1>人文地理</h1>
+          <h1>人文地理<span @click="gohumanlist" class="oldscmore">more <i class="el-icon-arrow-right"></i></span></h1>
           <div class="humdiv" v-if="index < 2" v-for="(item, index) in humList">
             <b>{{ item.title }}</b>
             <p>{{ item.humandesc }}</p>
-            <span>了解更多</span>
+            <span @click="undermore(item._id)">了解更多</span>
           </div>
         </div>
       </div>
@@ -44,12 +44,12 @@
       <!-- 新闻发布 -->
       <div class="news">
         <div class="newscon">
-          <h1>新闻资讯</h1>
+          <h1>新闻资讯<span @click="gonewslist" class="oldscmore">more <i class="el-icon-arrow-right"></i></span></h1>
           <div class="newscontain">
             <div class="marquee">
               <div class="marquee_box" ref="marquee_box">
                 <ul class="marquee_list" :class="{marquee_top:animate}">
-                    <li v-for="(item,index) in list" :key="index">{{item}}</li>
+                    <li v-for="(item,index) in list" :key="index">{{item.newsTitle}}</li>
                 </ul>
               </div>
             </div>
@@ -73,21 +73,21 @@ export default {
       msg: '',
       scenelist: [],
       humList: [],
-      list:[
-      '1111111111111111111',
-      '22222222222222222222',
-      '333333333333333333333',
-      '4444444444444444444',
-      '5555555555555555555',
-      '666666666666666666',
-      '777777777777777',
-      '888888888888888888'
-      ],
+      list:[],
       animate:false,
       showNum:4
     };
   },
   methods: {
+    gonewslist(){
+      this.$router.push('/newslist')
+    },
+    gohumanlist(){
+      this.$router.push('/humanlist')
+    },
+    gomessagelist(){
+      this.$router.push('/messageList')
+    },
     scmessage(id) {
       this.$router.push('/mesdetail?id=' + id);
     },
@@ -98,9 +98,17 @@ export default {
         this.list.shift()
         this.animate = false
       }, 1000);
+    },
+    undermore(id){
+      this.$router.push('humandetail?id=' + id)
     }
   },
   mounted() {
+    
+  },
+  created() {
+    setInterval(this.showMarquee,2000)
+
     this.$http.get('/users/sceneAll').then(res => {
       console.log(res);
       if (res.status == 200 && res.statusText == 'OK') {
@@ -116,9 +124,14 @@ export default {
         } else {
         }
       });
-  },
-  created() {
-    setInterval(this.showMarquee,2000)
+      this.$http.post('/users/allNews').then((res) => {
+        console.log(res.data)
+        if (res.status == 200 && res.statusText == 'OK') {
+          this.list = res.data
+        } else {
+          console.log('error')
+        }
+      })
   },
   mounted() {
     this.$refs.marquee_box.style.height = this.showNum * 30 + 'px'
@@ -127,6 +140,21 @@ export default {
 };
 </script>
 <style lang="">
+  .el-icon-arrow-right{
+    transform: scale(0.7);
+    margin-left: -5px;
+  }
+.oldscmore{
+  display: inline-block;
+  font-size: 12px;
+  letter-spacing: 0px;
+  margin-left: 15px;
+  cursor: pointer;
+}
+.oldscmore:hover{
+  color: #169ff3;
+}
+
 .lunbo {
   max-width: 1920px;
   min-width: 1200px;
@@ -150,6 +178,7 @@ export default {
 }
 .scenbecon img:hover {
   transform: scale(1.2);
+  cursor: pointer;
 }
 .scenbecon p {
   width: 100%;
@@ -206,6 +235,9 @@ export default {
   background: rgba(255, 255, 255, 0.7);
   padding: 50px 30px;
   box-sizing: border-box;
+  float: left;
+  margin-right: 20px;
+  margin-left: 80px;
 }
 .humdiv b {
   font-size: 25px;
@@ -228,6 +260,7 @@ export default {
   color: white;
   font-size: 15px;
   margin-top: 15px;
+  cursor: pointer;
 }
 .scienc {
   width: 100%;
@@ -308,7 +341,6 @@ export default {
   /* height: 200px; */
   align-items: center;
   color: #3a3a3a;
-  background-color: white;
   display: flex;
   box-sizing: border-box;
   overflow: hidden;
@@ -324,6 +356,8 @@ export default {
   display: block;
   position: relative;
   width: 65%;
+  height: 300px!important;
+  background-color: rgba(255,255,255,0.3);
   overflow: hidden;
   margin: 0 auto;
 }

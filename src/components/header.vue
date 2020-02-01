@@ -3,7 +3,7 @@
     <div class="navtop">
       <div class="navcon">
         <el-col :span="16">
-          <el-col class="navleft" :span="4" v-for="(item, index) in word" :key="item.id" @click="sendlink(item.id, index)">
+          <el-col class="navleft" :span="4" v-for="(item, index) in word" :key="item.id">
             <router-link :to="item.url">{{ item.word }}</router-link>
           </el-col>
         </el-col>
@@ -36,15 +36,14 @@ export default {
     this.word = data.nav.words;
   },
   methods: {
-    sendlink(id, index) {
-      // this.$router.push('/news'+index)
-    },
     login() {
       this.$router.replace('/login');
     },
     logout() {
       this.$router.replace('/logout').then(() => {
         this.$router.replace('/login');
+        var a = {}
+        sessionStorage.$user = JSON.stringify(a)
       });
     }
   },

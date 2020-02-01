@@ -3,15 +3,15 @@ var data = {
         "words":[
             {
                 "word":"景点展示",
-                "url":"/scienc"
+                "url":"/messageList"
             },
             {
                 "word":"人文地理",
-                "url":"/human"
+                "url":"/humanList"
             },
             {
                 "word":"新闻发布",
-                "url":"news"
+                "url":"newsList"
             }
         ]
     },

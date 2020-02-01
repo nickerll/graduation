@@ -65,12 +65,13 @@ export default {
                        if(res.data){
                        //dispatch采用promise链式调用
                             this.$store.dispatch('login',this.admin).then(() => {
+                                
                                 this.$notify({               //$notify是element-ui中的一个通知弹框方法
                                     type:'success',
                                     message:'欢迎你,' + this.user.name + '!',
                                     duration:3000
                                 })
-                                sessionStorage.setItem("token",this.user.name)
+                                sessionStorage.setItem("$user",JSON.stringify(this.user))
                                 this.$router.replace('/admin/list')
                             })
                         } else {

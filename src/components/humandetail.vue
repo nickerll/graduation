@@ -3,9 +3,10 @@
     <div class="contain">
       <h1 class="sctitle">{{msg.title}}</h1>
       <div class="mesdimg">
-        <img :src="commonUtil.getImgPath(msg.sceneLogo)" alt="">
+        <img :src="commonUtil.getImgPath(msg.humanimg)" alt="">
       </div>
-      <div class="scword">{{msg.describe}}</div>
+      <p class="scword">{{msg.humandesc}}</p>
+
       <div class="mesliuyan">
         <form action="">
           <textarea name="" id="liutext" cols="30" v-model="sceneliu" rows="10" placeholder="说点什么吧......"></textarea>
@@ -16,7 +17,7 @@
           <div class="liuhusthing" v-else>
             <div class="husthning" v-for="(item,index) in msg.leavemessage">
               <h1>{{item.name}}</h1>
-              <p>{{item.content}}</p>
+              <p>{{item.contant}}</p>
               <span>{{item.creatime}}</span>
             </div>
           </div>
@@ -30,21 +31,23 @@
 <script>
   import totop from './hometop.vue'
   export default {
-    components:{totop},
+    components: {
+      totop
+    },
     data() {
       return {
         msg: '',
         sceneliu: '',
-        nowtime: '',
-        Length:''
+        Length: '',
+        nowtime:''
       }
     },
     methods: {
       subtn() { //点击留言按钮，如果用户未登录，提示用户登录；如果用户处于登录状态，点击留言按钮获取输入框中的留言，将数据存储到景点数据表中的留言字段中。
         if (sessionStorage.getItem('$user') != "{}") { //如果用户处于登录状态
-          this.$http.post('/users/leavemessageById', this.qs.stringify({
+          this.$http.post('/users/humleavemessage', this.qs.stringify({
             id: this.$route.query.id,
-            leavemessage: this.sceneliu,
+            contant: this.sceneliu,
             name: JSON.parse(sessionStorage.$user).name,
             creatime: this.nowtime
           })).then((res) => {
@@ -76,11 +79,9 @@
         }
       },
       showAllleaveMessage() {
-        this.$http.get('/users/findSceneById', {
-          params: {
-            id: this.$route.query.id
-          }
-        }).then((res) => {
+        this.$http.post('/users/findHumanById', this.qs.stringify({
+          id: this.$route.query.id
+        })).then((res) => {
           console.log(res)
           if (res.status == 200 && res.statusText == "OK") {
             var data = res.data.data[0]
@@ -105,10 +106,9 @@
       this.nowtime = now
       //根据id查询数据
       this.showAllleaveMessage()
-      
     },
     mounted() {
-      
+
     },
     updated() {
 
@@ -119,6 +119,7 @@
   }
 
 </script>
+
 <style scoped>
   .husthning h1 {
     font-size: 14px;

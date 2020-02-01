@@ -22,14 +22,7 @@ export default new Router({
     },{
       path:'/admin',
       name:'Admin',
-      component:admin,
-      // children:[{
-      //   path:'/admin/list',
-      //   name:'list',
-      //   component:reslove => {
-      //     require(['@/components/admin/list'],reslove)
-      //   }
-      // }]
+      component:admin
     },{
       path:'/register',
       name:'Register',
@@ -60,6 +53,23 @@ export default new Router({
       path:'/mesdetail',
       name:'mesdetail',
       component:resolve => {require(['@/components/mesdetail'],resolve)}
+    },
+    {
+      path:'/humanlist',
+      name:'humanlist',
+      component:resolve => {require(['@/components/humanlist'],resolve)}
+    },{
+      path:'/humandetail',
+      name:'humandetail',
+      component:resolve => {require(['@/components/humandetail'],resolve)}
+    },{
+      path:'/newslist',
+      name:'newslist',
+      component:resolve => {require(['@/components/newslist'],resolve)}
+    },{
+      path:'/newsdetail',
+      name:'newsdetail',
+      component:resolve => {require(['@/components/newsdetail'],resolve)}
     }
   ]
 })
