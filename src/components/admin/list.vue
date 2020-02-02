@@ -261,12 +261,16 @@
       </el-tab-pane>
       <!-- 新闻发布结束 -->
     </el-tabs>
+    <leavemessage :showbox="showbool" @func="cheshowbool" ref="scenleave"></leavemessage>
   </div>
 </template>
 <script>
+  import leavemessage from './leavmessalert.vue'
   export default {
+    components:{leavemessage},
     data() {
       return {
+        showbool:false,
         tabPosition: 'left',
         tableData: [],
         search: '',
@@ -492,9 +496,16 @@
       },
       //人文增加子类
       humanaddson() {},
-      //景点添加子类
-      sceneaddson() {
+      //留言管理点击关闭  接收子组件传值false
+      cheshowbool(data){
+        this.showbool = data
+      },
+      //景点留言管理
+      sceneaddson(index,row) {
+        this.showbool = true
+        console.log(row._id)
         console.log('景点留言管理')
+        this.$refs.scenleave.screqest(row._id)
       },
       //景点编辑   //问题第二次点击的时候无图片 导致数据修改出现问题
       scenedit(index, row) {

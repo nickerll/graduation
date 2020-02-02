@@ -261,7 +261,7 @@ router.route('/humanAll').post((req, res) => {
     res.json(data)
   })
 })
-//根据id查询
+//根据id查询人文
 router.route('/findHumanById').post((req, res) => {
   console.log({
     query: req.query,

@@ -70,6 +70,10 @@ export default new Router({
       path:'/newsdetail',
       name:'newsdetail',
       component:resolve => {require(['@/components/newsdetail'],resolve)}
+    },{
+      path:'/leavmessalert',
+      name:'leavmessalert',
+      component:resolve => {require(['@/components/admin/leavmessalert'],resolve)}
     }
   ]
 })
