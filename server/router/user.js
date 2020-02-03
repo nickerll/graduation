@@ -125,6 +125,27 @@ router.route('/leavemessageById').post((req, res) => {
     })
   })
 })
+//景点留言删除
+router.route('/scenleavemessagedelete').post((req, res) => {
+  console.log('/////1221212112')
+  console.log({query:req.query,data:req.params,json:req.body})
+  Scene.update({
+    _id: req.body.id
+  }, {
+    $pull: {
+      leavemessage: {
+        "content": req.body.content
+      }
+    }
+  }).then((delscleavemessage) => {
+    console.log('//////1321321/////')
+    console.log(delscleavemessage)
+    res.json({
+      code: 2,
+      message: '删除成功！'
+    })
+  })
+})
 //定义时间
 var d = new Date()
 var year = d.getFullYear() //年

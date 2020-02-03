@@ -10,7 +10,7 @@
           <el-table-column prop="creatime" label="留言时间" width="180"></el-table-column>
           <el-table-column label="操作" width="180">
             <template slot-scope="scope">
-              <el-button size="mini" @click="leavedit(scope.$index, scope.row)">编辑</el-button>
+              <!-- <el-button size="mini" @click="leavedit(scope.$index, scope.row)">编辑</el-button> -->
               <el-button size="mini" type="danger" @click="leavdel(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -24,17 +24,49 @@
     props: ['showbox'],
     data() {
       return {
-        leavmsg: []
+        leavmsg: [],
+        leavedelid: ''
       }
     },
     methods: {
       closebox() {
         this.$emit('func', false)
       },
+      //留言编辑
       leavedit(index, row) {},
-      leavdel(index, row) {},
+      //留言删除
+      leavdel(index, row) {
+        this.$confirm("是否删除这条留言？", "提示", {
+          type: 'warning',
+          confirmButtonText: '确定',
+          cancelButtonText: '取消'
+        }).then(() => {
+          this.$http.post('/users/scenleavemessagedelete', this.qs.stringify({
+            id: this.leavedelid,
+            content: row.content
+          })).then((res) => {
+            console.log(res)
+            if (res.status == 200 && res.statusText == "OK") {
+              this.$message({
+                type: 'success',
+                message: res.data.message
+              })
+              this.screqest(this.leavedelid)
+            } else {
+              console.log("error")
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除！'
+          })
+        })
+      },
+      //当前景点下的所有留言内容
       screqest(scenid) {
         console.log(scenid)
+        this.leavedelid = scenid
         this.$http.get('/users/findSceneById', {
           params: {
             id: scenid
