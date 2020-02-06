@@ -150,7 +150,7 @@
             <template slot-scope="scope">
               <el-button size="mini" @click="humanedit(scope.$index, scope.row)">编辑</el-button>
               <el-button size="mini" type="danger" @click="humandel(scope.$index, scope.row)">删除</el-button>
-              <el-button size="mini" @click="humanaddson(scope.$index, scope.row)">增加子类</el-button>
+              <el-button size="mini" @click="humanaddson(scope.$index, scope.row)">留言管理</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -168,7 +168,12 @@
           <el-row type="flex" justify="left">
             <el-col :span="5">
               <el-form-item label="人文图片" prop="humanimg">
-                <el-image :src="human.humanimg"></el-image>
+                <el-upload class="upload-demo" action="http://localhost:3000/uploadfile" :limit='1'
+                  :on-preview="handlePreview" :on-remove="handleRemove" :on-success="fileimghuman" list-type="picture"
+                  ref="uploadhumanimg" :file-list="humanfileList" v-model="human.humanimg">
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb(上传一张即可)</div>
+                </el-upload>
               </el-form-item>
             </el-col>
           </el-row>
@@ -214,7 +219,7 @@
             <template slot-scope="scope">
               <el-button size="mini" @click="newsedit(scope.$index, scope.row)">编辑</el-button>
               <el-button size="mini" type="danger" @click="newsdel(scope.$index, scope.row)">删除</el-button>
-              <el-button size="mini" @click="newsaddson(scope.$index, scope.row)">增加子类</el-button>
+              <!-- <el-button size="mini" @click="newsaddson(scope.$index, scope.row)">留言管理</el-button> -->
             </template>
           </el-table-column>
         </el-table>
@@ -232,7 +237,12 @@
           <el-row type="flex" justify="left">
             <el-col :span="5">
               <el-form-item label="新闻图片" prop="newsimg">
-                <el-image :src="news.newsimg"></el-image>
+                <el-upload class="upload-demo" action="http://localhost:3000/uploadfile" :limit='1'
+                  :on-preview="handlePreview" :on-remove="handleRemove" :on-success="fileimgnews" list-type="picture"
+                  ref="uploadnewsimg" :file-list="newsfileList" v-model="news.newsimg">
+                  <el-button size="small" type="primary">点击上传</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb(上传一张即可)</div>
+                </el-upload>
               </el-form-item>
             </el-col>
           </el-row>
@@ -262,14 +272,17 @@
       <!-- 新闻发布结束 -->
     </el-tabs>
     <leavemessage :showbox="showbool" @func="cheshowbool" ref="scenleave"></leavemessage>
+    <humanMessage :showhumbox="showhumbool" @func="cheshowhumanbool" ref="humanleave"></humanMessage>
   </div>
 </template>
 <script>
   import leavemessage from './leavmessalert.vue'
+  import humanMessage from './huamleavemessage.vue'
   export default {
-    components:{leavemessage},
+    components:{leavemessage,humanMessage},
     data() {
       return {
+        showhumbool:false,
         showbool:false,
         tabPosition: 'left',
         tableData: [],
@@ -336,6 +349,8 @@
         humanData: [],
         newsData: [],
         fileList: [{}],
+        newsfileList:[{}],
+        humanfileList:[{}],
         chenge: false
       };
     },
@@ -381,7 +396,7 @@
           this.$message.info('已取消删除')
         })
       },
-      //新闻添加子类
+      //新闻留言管理
       newsaddson() {},
       //新闻提交
       newsSub() {
@@ -393,6 +408,7 @@
               message: '新增成功',
               title: '提示'
             })
+            this.$refs['uploadnewsimg'].clearFiles()
             this.newsAll()
             this.newsform = false
             this.newstab = true
@@ -408,6 +424,7 @@
       },
       // 新闻新增按钮
       newsaddbtn() {
+        this.$refs['uploadnewsimg'].clearFiles()
         if (this.newsbtn == true) {
           this.newstab = false
           this.newsform = true
@@ -424,8 +441,18 @@
         this.newsform = false
         this.newsbtn = true
       },
+      fileimgnews(file,row){
+        this.news.newsimg = file.path
+        console.log('新闻新闻新闻')
+        console.log(file.path)
+      },
+
+      fileimghuman(file,row){
+        this.human.humanimg = file.path
+      },
       //人文新增按钮
       humaddbtn() {
+        this.$refs['uploadhumanimg'].clearFiles()  //问题：点击新增之后上传图片部分的文件被清空，所以点击完新增之后再点击编辑图片不显示，但是点击了编辑之后上传部分不应该是被重新赋值了么，为什么会不显示
         if (this.humbtn == true) {
           this.humtab = false
           this.humform = true
@@ -494,8 +521,15 @@
           this.$message.info('已取消删除')
         })
       },
-      //人文增加子类
-      humanaddson() {},
+      cheshowhumanbool(data){
+        this.showhumbool = data
+      },
+      //人文留言管理
+      humanaddson(index,row) {
+        this.showhumbool = true
+        console.log(row)
+        this.$refs.humanleave.screqest(row._id)
+      },
       //留言管理点击关闭  接收子组件传值false
       cheshowbool(data){
         this.showbool = data
@@ -699,7 +733,7 @@
       }
     },
     created() {
-      console.log(123)
+      
     },
     updated() {
 
@@ -805,5 +839,7 @@
     padding: 10px 0;
     background-color: #f9fafc;
   }
-
+  .el-form-item__content{
+    width: 400px;
+  }
 </style>

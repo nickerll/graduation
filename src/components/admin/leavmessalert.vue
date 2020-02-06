@@ -107,7 +107,7 @@
   .bgrblack {
     width: 100%;
     height: 100vh;
-    position: absolute;
+    position: fixed;
     top: 0;
     z-index: 99;
     background: rgba(0, 0, 0, 0.3)

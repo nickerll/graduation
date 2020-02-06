@@ -128,7 +128,11 @@ router.route('/leavemessageById').post((req, res) => {
 //景点留言删除
 router.route('/scenleavemessagedelete').post((req, res) => {
   console.log('/////1221212112')
-  console.log({query:req.query,data:req.params,json:req.body})
+  console.log({
+    query: req.query,
+    data: req.params,
+    json: req.body
+  })
   Scene.update({
     _id: req.body.id
   }, {
@@ -323,6 +327,23 @@ router.route('/humleavemessage').post((req, res) => {
     res.json({
       code: 2,
       message: '留言成功！'
+    })
+  })
+})
+//删除留言内容
+router.route('/humanleavemessagedelete').post((req, res) => {
+  Human.update({
+    _id: req.body.id
+  }, {
+    $pull: {
+      leavemessage: {
+        "contant": req.body.contant
+      }
+    }
+  }).then((huamnleavdel) => {
+    res.json({
+      code:2,
+      message:"删除成功！"
     })
   })
 })

@@ -44,7 +44,7 @@
     },
     methods: {
       subtn() { //点击留言按钮，如果用户未登录，提示用户登录；如果用户处于登录状态，点击留言按钮获取输入框中的留言，将数据存储到景点数据表中的留言字段中。
-        if (sessionStorage.getItem('$user') != "{}") { //如果用户处于登录状态
+        if (sessionStorage.$user != "{}" && sessionStorage.$user != undefined) { //如果用户处于登录状态
           this.$http.post('/users/humleavemessage', this.qs.stringify({
             id: this.$route.query.id,
             contant: this.sceneliu,
