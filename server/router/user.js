@@ -359,6 +359,24 @@ router.route('/humanDel').post((req, res) => {
     })
   })
 })
+//修改人文地理内容
+router.route('/humanchange').post((req,res) => {
+  var changeitem = {
+    title: req.body.title,
+    humanimg: req.body.humanimg,
+    humandesc: req.body.humandesc,
+    updateData: now
+  }
+  Human.updateOne({
+    _id: req.body.id
+  }, changeitem).then((chg) => {
+    console.log(chg)
+    res.json({
+      code: 2,
+      message: '修改成功!'
+    })
+  })
+})
 //添加人文地理
 router.route('/addhuman').post((req, res) => {
   var human = new Human({
@@ -385,7 +403,7 @@ router.route('/allNews').post((req, res) => {
     res.json(data)
   })
 })
-//根据id查询
+//根据id查询新闻
 router.route('/findnewById').post((req, res) => {
   News.find({
     _id: req.body.id
@@ -394,6 +412,23 @@ router.route('/findnewById').post((req, res) => {
       code: '2',
       message: '查询成功！',
       data: idnewResult
+    })
+  })
+})
+//新闻修改按钮提交
+router.route('/newschange').post((req,res) => {
+  var newsdata = {
+    newsTitle:req.body.newsTitle,
+    newsimg:req.body.newsimg,
+    releaseCon:req.body.releaseCon,
+    releaseDate:req.body.releaseDate,
+    updateData:now
+  }
+  News.updateOne({_id:req.body.id},newsdata).then((newchangeres) => {
+    console.log(newchangeres)
+    res.json({
+      code:2,
+      message:"修改成功！"
     })
   })
 })

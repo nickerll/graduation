@@ -186,7 +186,8 @@
           </el-row>
           <el-row type="flex" justify="left">
             <el-col :span="5">
-              <el-button type="primary" icon="el-icon-upload" @click="humsub">提交</el-button>
+              <el-button v-if="humchg" type="primary" icon="el-icon-upload" @click="humsub">提交</el-button>
+              <el-button v-else type="primary" icon="el-icon-upload" @click="humchange">修改</el-button>
               <el-button type="info" icon="el-icon-close" @click="humclose">关闭</el-button>
             </el-col>
           </el-row>
@@ -262,7 +263,8 @@
           </el-row>
           <el-row type="flex" justify="left">
             <el-col :span="5">
-              <el-button type="primary" icon="el-icon-upload" @click="newsSub">提交</el-button>
+              <el-button v-if="newchange" type="primary" icon="el-icon-upload" @click="newsSub">提交</el-button>
+              <el-button v-else type="primary" icon="el-icon-upload" @click="newschg">修改</el-button>
               <el-button type="info" icon="el-icon-close" @click="newscolse">关闭</el-button>
             </el-col>
           </el-row>
@@ -279,11 +281,14 @@
   import leavemessage from './leavmessalert.vue'
   import humanMessage from './huamleavemessage.vue'
   export default {
-    components:{leavemessage,humanMessage},
+    components: {
+      leavemessage,
+      humanMessage
+    },
     data() {
       return {
-        showhumbool:false,
-        showbool:false,
+        showhumbool: false,
+        showbool: false,
         tabPosition: 'left',
         tableData: [],
         search: '',
@@ -349,9 +354,13 @@
         humanData: [],
         newsData: [],
         fileList: [{}],
-        newsfileList:[{}],
-        humanfileList:[{}],
-        chenge: false
+        newsfileList: [{}],
+        humanfileList: [{}],
+        chenge: false,
+        humchg: true,
+        humid: '',
+        newchange: true,
+        newsid:''
       };
     },
     mounted() {
@@ -374,7 +383,50 @@
         })
       },
       //新闻编辑
-      newsedit() {},
+      newsedit(index, row) {
+        console.log(index, row)
+        this.newstab = false
+        this.newsform = true
+        this.newsbtn = false
+        this.newchange = false
+        this.newsid = row._id
+        this.$http.post('/users/findnewById', {
+          id: row._id
+        }).then((res) => {
+          console.log(res)
+          if (res.status == 200 && res.statusText == "OK") {
+            this.newsfileList[0].name = res.data.data[0].newsimg.replace(/\\/g, '/').split('/')[1]
+            this.newsfileList[0].url = this.commonUtil.getImgPath(res.data.data[0].newsimg)
+            this.news = res.data.data[0]
+          } else {
+            console.log('error')
+          }
+        })
+      },
+      newschg() {
+        this.$http.post('/users/newschange', {
+          id:this.newsid,
+          newsTitle: this.news.newsTitle,
+          newsimg: this.news.newsimg,
+          releaseCon: this.news.releaseCon,
+          releaseDate: this.news.releaseDate
+        }).then((res) => {
+          console.log(res)
+          if (res.status == 200 && res.statusText == "OK") {
+            this.$message({
+              type:"success",
+              message:res.data.message
+            })
+          } else {
+            console.log('error')
+          }
+        })
+        this.newstab = true
+        this.newsform = false
+        this.newsbtn = true
+        this.newchange = true
+        this.newsAll()
+      },
       //新闻删除
       newsdel(index, row) {
         this.$confirm('是否删除该条信息', '提示', {
@@ -424,6 +476,7 @@
       },
       // 新闻新增按钮
       newsaddbtn() {
+        this.news = {}
         this.$refs['uploadnewsimg'].clearFiles()
         if (this.newsbtn == true) {
           this.newstab = false
@@ -441,18 +494,20 @@
         this.newsform = false
         this.newsbtn = true
       },
-      fileimgnews(file,row){
+      fileimgnews(file, row) {
         this.news.newsimg = file.path
         console.log('新闻新闻新闻')
         console.log(file.path)
       },
 
-      fileimghuman(file,row){
+      fileimghuman(file, row) {
         this.human.humanimg = file.path
       },
       //人文新增按钮
       humaddbtn() {
-        this.$refs['uploadhumanimg'].clearFiles()  //问题：点击新增之后上传图片部分的文件被清空，所以点击完新增之后再点击编辑图片不显示，但是点击了编辑之后上传部分不应该是被重新赋值了么，为什么会不显示
+        this.human = {}
+        this.$refs['uploadhumanimg']
+        .clearFiles() //问题：点击新增之后上传图片部分的文件被清空，所以点击完新增之后再点击编辑图片不显示，但是点击了编辑之后上传部分不应该是被重新赋值了么，为什么会不显示
         if (this.humbtn == true) {
           this.humtab = false
           this.humform = true
@@ -499,7 +554,48 @@
         this.humbtn = true
       },
       //人文编辑
-      humanedit() {},
+      humanedit(index, row) {
+        this.humtab = false
+        this.humform = true
+        this.humbtn = false
+        console.log(index, row)
+        this.$http.post('/users/findHumanById', {
+          id: row._id
+        }).then((res) => {
+          console.log(res)
+          if (res.status == 200 && res.statusText == "OK") {
+            this.humanfileList[0].name = res.data.data[0].humanimg.replace(/\\/g, '/').split('/')[1]
+            this.humanfileList[0].url = this.commonUtil.getImgPath(res.data.data[0].humanimg)
+            this.human = res.data.data[0]
+          } else {
+            console.log('error')
+          }
+        })
+        this.humchg = false
+        this.humid = row._id
+      },
+      //人文修改
+      humchange() {
+        this.$http.post('/users/humanchange', {
+          id: this.humid,
+          title: this.human.title,
+          humanimg: this.human.humanimg,
+          humandesc: this.human.humandesc
+        }).then((res) => {
+          if (res.status == 200 && res.statusText == "OK") {
+            this.$message({
+              type: "success",
+              message: res.data.message
+            })
+          } else {
+            console.log('error')
+          }
+        })
+        this.humtab = true
+        this.humform = false
+        this.humbtn = true
+        this.humanAll()
+      },
       //人文删除
       humandel(index, row) {
         this.$confirm('是否删除该条信息', '提示', {
@@ -521,21 +617,21 @@
           this.$message.info('已取消删除')
         })
       },
-      cheshowhumanbool(data){
+      cheshowhumanbool(data) {
         this.showhumbool = data
       },
       //人文留言管理
-      humanaddson(index,row) {
+      humanaddson(index, row) {
         this.showhumbool = true
         console.log(row)
         this.$refs.humanleave.screqest(row._id)
       },
       //留言管理点击关闭  接收子组件传值false
-      cheshowbool(data){
+      cheshowbool(data) {
         this.showbool = data
       },
       //景点留言管理
-      sceneaddson(index,row) {
+      sceneaddson(index, row) {
         this.showbool = true
         console.log(row._id)
         console.log('景点留言管理')
@@ -733,7 +829,7 @@
       }
     },
     created() {
-      
+
     },
     updated() {
 
@@ -839,7 +935,9 @@
     padding: 10px 0;
     background-color: #f9fafc;
   }
-  .el-form-item__content{
+
+  .el-form-item__content {
     width: 400px;
   }
+
 </style>
