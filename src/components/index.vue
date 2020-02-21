@@ -72,6 +72,7 @@
     <div class="shengming" v-if="shegm">
       <div class="shengcon">
         <span class="iconshen" @click="shenclose"><i class="el-icon-close"></i></span>
+        <div>本网站所有文字图片为本人徐嘉豪做毕业设计所搜集的资料</div>
       </div>
     </div>
   </div>
