@@ -6,11 +6,12 @@ var formidable = require('formidable');
 var objectId = require('mongodb').ObjectId;
 var _id = objectId(_id)
 // 引入数据库表
-var User = require('../models/user'); //存放数据的数据表
-var Admin = require('../models/admin'); //存放数据的数据表
+var User = require('../models/user'); //存放用户数据的数据表
+var Admin = require('../models/admin'); //存放管理员数据的数据表
 var Scene = require('../models/scene.js'); //存放景点的数据表
 var Human = require('../models/human.js'); //存放人文地理的数据表
 var News = require("../models/news.js"); //存放新闻数据的表
+var Examine = require("../models/examine.js") //存放审核员数据的数据表
 //定义返回变量格式
 var resData;
 router.use((req, res, next) => {
@@ -19,6 +20,24 @@ router.use((req, res, next) => {
     message: ''
   }
   next()
+})
+
+router.route('/examine').post((req,res) => {
+  Examine.findOne({
+    name:req.body.name,
+    pwd:req.body.password
+  }).then((examineres) => {
+    console.log(examineres)
+    res.json({
+      code:2,
+      message:"操作成功！"
+    })
+  }).catch(() => {
+    res.json({
+      code:5,
+      message:"error"
+    })
+  })
 })
 
 router.route('/admin').post((req, res) => {

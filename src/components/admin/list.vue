@@ -669,6 +669,8 @@
             })
             this.scenTable = true
             this.scbtn = false
+            console.log(this.$refs['uploadscenimg'].uploadFiles)
+            this.$refs['uploadscenimg'].uploadFiles = []
             this.showScene()
           } else {
             this.$notify({

@@ -74,6 +74,14 @@ export default new Router({
       path:'/leavmessalert',
       name:'leavmessalert',
       component:resolve => {require(['@/components/admin/leavmessalert'],resolve)}
+    },{
+      path:"/admin/examine",
+      name:'examine',
+      component:resolve => {require(['@/components/admin/examine'],resolve)}
+    },{
+      path:"/admin/examine/list",
+      name:'examinelist',
+      component:resolve => {require(['@/components/admin/examinelist'],resolve)}
     }
   ]
 })
