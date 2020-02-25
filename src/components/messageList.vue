@@ -27,7 +27,12 @@
       }
     },
     created() {
-      this.$http.get('/users/sceneAll').then((res) => {
+      console.log(this.$route.query.searchWord == '')
+      this.$http.get('/users/sceneAll',{
+        params:{
+          word:this.$route.query.searchWord
+        }
+      }).then((res) => {
         console.log(res)
         if (res.status == 200 && res.statusText == "OK") {
           var data = res.data.scenalldata

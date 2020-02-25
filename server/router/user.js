@@ -86,17 +86,31 @@ router.route('/deleteuser').get((req, res) => {
 })
 //景点展示查询所有
 router.route('/sceneAll').get((req, res) => {
-  Scene.find().then((data) => {
-    console.log('-----所有景点------')
-    console.log(data)
-    console.log('-----结束--------')
-    console.log(req.headers.origin + '/')
-    // href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
-    res.json({
-      href: req.headers.origin + '/',
-      scenalldata: data
+  if (req.query.word != undefined && req.query.word != '') {
+    Scene.find({title:{$regex:req.query.word,$options:"i"}}).then((data) => {
+      console.log('-----所有景点------')
+      console.log(data)
+      console.log('-----结束--------')
+      console.log(req.headers.origin + '/')
+      // href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
+      res.json({
+        href: req.headers.origin + '/',
+        scenalldata: data
+      })
     })
-  })
+  } else{
+    Scene.find().then((data) => {
+      console.log('-----所有景点------')
+      console.log(data)
+      console.log('-----结束--------')
+      console.log(req.headers.origin + '/')
+      // href:req.headers.origin+'/'+req.body.sceneLogo.replace(/\\/g,'/'),
+      res.json({
+        href: req.headers.origin + '/',
+        scenalldata: data
+      })
+    })
+  }
 });
 //根据id查询景点
 router.route('/findSceneById').get((req, res) => {
@@ -301,9 +315,15 @@ router.route('/Register').post((req, res) => { //注册路由
 //人文地理
 //查询所有的内容
 router.route('/humanAll').post((req, res) => {
-  Human.find().then((data) => {
-    res.json(data)
-  })
+  if (req.body.word != undefined && req.body.word != '') {
+    Human.find({"title":{$regex:req.body.word,$options:'i'}}).then((data) => {
+      res.json(data)
+    })
+  } else {
+    Human.find().then((data) => {
+      res.json(data)
+    }) 
+  }
 })
 //根据id查询人文
 router.route('/findHumanById').post((req, res) => {
@@ -418,9 +438,15 @@ router.route('/addhuman').post((req, res) => {
 //新闻发布
 //查找所有新闻内容
 router.route('/allNews').post((req, res) => {
-  News.find().then((data) => {
-    res.json(data)
-  })
+  if (req.body.word != undefined && req.body.word != '') {
+    News.find({'newsTitle':{$regex:req.body.word,$options:'i'}}).then((data) => {
+      res.json(data)
+    })
+  } else {
+    News.find().then((data) => {
+      res.json(data)
+    }) 
+  }
 })
 //根据id查询新闻
 router.route('/findnewById').post((req, res) => {

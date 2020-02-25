@@ -23,7 +23,9 @@ export default {
         }
     },
     created() {
-        this.$http.post('/users/allNews').then((res) => {
+        this.$http.post('/users/allNews',{
+            word:this.$route.query.searchWord
+        }).then((res) => {
             console.log(res)
             if (res.status == 200 && res.statusText == "OK") {
                 this.msg = res.data
@@ -47,7 +49,7 @@ export default {
     .contain{
         width: 900px;
         margin: 80px auto 0;
-        background: #dfdfdf;
+        background: #f8f5f5;
         padding: 0 15px 20px;
         box-sizing: border-box;
         border-radius: 15px;
@@ -60,9 +62,9 @@ export default {
        border-bottom: 1px solid #665c5c;
    }
    .newsline:hover{
-       background: #e7b612;
+       background: #c5c2b9;
        cursor: pointer;
-       color: rgb(223, 75, 75);
+       color: rgb(29, 92, 228);
    }
    .newsline p {
        display: inline-block;
@@ -73,6 +75,7 @@ export default {
        display: inline-block;
        float:right;
        margin-right: 15px;
+       font-size: 13px;
    }
    .newsline::after{
        content: '';

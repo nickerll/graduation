@@ -27,7 +27,9 @@
       }
     },
     created() {
-      this.$http.post('/users/humanAll').then((res) => {
+      this.$http.post('/users/humanAll',{
+        word:this.$route.query.searchWord
+      }).then((res) => {
         console.log(res)
         if (res.status == 200 && res.statusText == "OK") {
           var data = res.data
