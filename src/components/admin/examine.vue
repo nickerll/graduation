@@ -1,5 +1,5 @@
 <template lang="">
-    <div>
+    <div class="conin">
         <el-form ref="loginForm" :model="user" :rules='rules' status-icon label-width="100px">
             <el-row type="flex" justify="center">
                 <el-col :span="3">
@@ -32,6 +32,7 @@
                 </el-col>
             </el-row>
         </el-form>
+        <div class="page-header-image"></div>
     </div>
 </template>
 <script>
@@ -98,5 +99,23 @@ export default {
 }
 </script>
 <style lang="">
+    .page-header-image {
+    width: 100%;
+    height: 100%;
+    background: url(../../assets/login.jpg);
+    background-size: cover;
+    background-position: center center;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+  }
 
+  .conin {
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.3);
+    padding-top: 120px;
+    box-sizing: border-box;
+  }
 </style>

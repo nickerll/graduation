@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-header-image">
     <div class="contain">
       <div class="sclist" @click="gomessagedetail(item._id)" v-for="(item,index) in msg">
         <div class="sclistimg">
@@ -53,6 +53,16 @@
 </script>
 
 <style scoped>
+  .page-header-image {
+    width: 100%;
+    background: url(../assets/login.jpg);
+    background-size: cover;
+    background-position: center center;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+  }
   .backhome{
     right: 20px;
   }

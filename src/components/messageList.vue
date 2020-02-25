@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-header-image">
     <div class="contain">
       <div class="sclist" @click="gomessagedetail(item._id)" v-for="(item,index) in msg">
         <div class="sclistimg">
@@ -55,6 +55,16 @@
 </script>
 
 <style scoped>
+  .page-header-image {
+    width: 100%;
+    background: url(../assets/login.jpg);
+    background-size: cover;
+    background-position: center center;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+  }
   body{
     background: #f1f1f1;
   }
@@ -77,6 +87,8 @@
     margin-right: 20px;
     margin-left: 53px;
     margin-bottom: 40px;
+    background:rgba(0,0,0,0.4);
+    color: rgb(8, 206, 179);
   }
   .sclist:hover{
     transform: translateY(-20px);
