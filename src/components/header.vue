@@ -37,7 +37,8 @@
         searchWord: '',
         fication: "请选择",
         ficat: false,
-        ficlist: ["景点", "人文", "新闻"]
+        ficlist: ["景点", "人文", "新闻"],
+        user:""
       };
     },
     mounted() {
@@ -92,11 +93,19 @@
     updated() {
       console.log();
     },
-    computed: {
-      user() {
-        return this.$store.state.user;
+    created() {
+      // console.log(JSON.parse(sessionStorage.$user))
+      if (sessionStorage.$user == undefined) {
+        this.user = {}
+      } else {
+        this.user = JSON.parse(sessionStorage.$user) 
       }
-    }
+    },
+    // computed: {
+    //   user() {
+    //     return this.$store.state.user;
+    //   }
+    // }
   };
 
 </script>

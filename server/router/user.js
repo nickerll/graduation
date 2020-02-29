@@ -54,14 +54,26 @@ router.route('/admin').post((req, res) => {
 })
 //登录
 router.route('/validate').post((req, res) => {
+  console.log(req.body.name)
   User.find({
     name: req.body.name,
     pwd: req.body.password
-  }, (err, user) => {
-    if (err) {
-      console.log(err)
+  }).then((useres) => {
+    if (useres != '') {
+      console.log('用户登录信息')
+      console.log(useres)
+      res.json({
+        code: 2,
+        message: "查询成功！",
+        data: useres
+      })
+    } else {
+      console.log('该用户尚未注册！')
+      res.json({
+        code:3,
+        message:"该用户尚未注册！"
+      })
     }
-    res.json(user)
   })
 })
 //查询所有用户
@@ -250,7 +262,7 @@ router.route('/deleScene').get((req, res) => {
   })
 })
 //景点留言回复
-router.route('/scenereply').post((req,res) => {
+router.route('/scenereply').post((req, res) => {
   //定义时间
   var d = new Date()
   var year = d.getFullYear() //年
@@ -261,28 +273,42 @@ router.route('/scenereply').post((req,res) => {
   var seconds = d.getSeconds() //秒
   var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
   var now1 = year + month + day + hour + minutes + seconds
-  Scene.update({"leavemessage.id":req.body.repid},{$set:{"leavemessage.$.replymessage":[{
-    "content":req.body.repword,
-    "id":now1,
-    "createDate":now
-  }]}}).then((represcon) => {
+  Scene.update({
+    "leavemessage.id": req.body.repid
+  }, {
+    $set: {
+      "leavemessage.$.replymessage": [{
+        "content": req.body.repword,
+        "id": now1,
+        "createDate": now
+      }]
+    }
+  }).then((represcon) => {
     console.log("景点留言回复")
     console.log(represcon)
     res.json({
-      code:2,
-      message:"回复成功!"
+      code: 2,
+      message: "回复成功!"
     })
   })
 })
 //查询景点评论下的所有回复留言
-router.route('/Searchreply').post((req,res) => {
-  Scene.find({_id:req.body.repleavid},{"leavemessage":{$elemMatch:{"id":req.body.repid}}}).then((searrep) => {
+router.route('/Searchreply').post((req, res) => {
+  Scene.find({
+    _id: req.body.repleavid
+  }, {
+    "leavemessage": {
+      $elemMatch: {
+        "id": req.body.repid
+      }
+    }
+  }).then((searrep) => {
     console.log('全部景点回复留言')
     console.log(searrep)
     res.json({
-      code:2,
-      message:"查询成功！",
-      data:searrep
+      code: 2,
+      message: "查询成功！",
+      data: searrep
     })
   })
 })
@@ -524,7 +550,7 @@ router.route('/addhuman').post((req, res) => {
   res.json(human)
 })
 //景点留言回复
-router.route('/humanreply').post((req,res) => {
+router.route('/humanreply').post((req, res) => {
   //定义时间
   var d = new Date()
   var year = d.getFullYear() //年
@@ -535,28 +561,42 @@ router.route('/humanreply').post((req,res) => {
   var seconds = d.getSeconds() //秒
   var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
   var now1 = year + month + day + hour + minutes + seconds
-  Human.update({"leavemessage.id":req.body.repid},{$set:{"leavemessage.$.replymessage":[{
-    "content":req.body.repword,
-    "id":now1,
-    "createDate":now
-  }]}}).then((represcon) => {
+  Human.update({
+    "leavemessage.id": req.body.repid
+  }, {
+    $set: {
+      "leavemessage.$.replymessage": [{
+        "content": req.body.repword,
+        "id": now1,
+        "createDate": now
+      }]
+    }
+  }).then((represcon) => {
     console.log("景点留言回复")
     console.log(represcon)
     res.json({
-      code:2,
-      message:"回复成功!"
+      code: 2,
+      message: "回复成功!"
     })
   })
 })
 //查询景点评论下的所有回复留言
-router.route('/Searchhumreply').post((req,res) => {
-  Human.find({_id:req.body.repleavid},{"leavemessage":{$elemMatch:{"id":req.body.repid}}}).then((searrep) => {
+router.route('/Searchhumreply').post((req, res) => {
+  Human.find({
+    _id: req.body.repleavid
+  }, {
+    "leavemessage": {
+      $elemMatch: {
+        "id": req.body.repid
+      }
+    }
+  }).then((searrep) => {
     console.log('全部景点回复留言')
     console.log(searrep)
     res.json({
-      code:2,
-      message:"查询成功！",
-      data:searrep
+      code: 2,
+      message: "查询成功！",
+      data: searrep
     })
   })
 })
