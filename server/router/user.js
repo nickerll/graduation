@@ -309,6 +309,15 @@ router.route('/editScene').post((req, res) => {
 })
 //景点修改
 router.route('/chengeScene').post((req, res) => {
+  //定义时间
+  var d = new Date()
+  var year = d.getFullYear() //年
+  var month = d.getMonth() + 1 //月
+  var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes() //分
+  var seconds = d.getSeconds() //秒
+  var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
   var changeitem = {
     _id: sceneId,
     title: req.body.title,
