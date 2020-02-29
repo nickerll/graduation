@@ -19,6 +19,11 @@
               <h1>{{item.name}}</h1>
               <p>{{item.contant}}</p>
               <span>{{item.creatime}}</span>
+              <div class="humreply" v-for="(item1,index1) in item.replymessage">
+                <h1>管理员回复：</h1>
+                <p>{{item1.content}}</p>
+                <span>{{item1.createDate}}</span>
+              </div>
             </div>
           </div>
         </div>

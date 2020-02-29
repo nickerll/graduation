@@ -57,6 +57,7 @@
 <style scoped>
   .page-header-image {
     width: 100%;
+    height: auto;
     background: url(../assets/login.jpg);
     background-size: cover;
     background-position: center center;

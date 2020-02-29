@@ -12,6 +12,7 @@ var Scene = require('../models/scene.js'); //存放景点的数据表
 var Human = require('../models/human.js'); //存放人文地理的数据表
 var News = require("../models/news.js"); //存放新闻数据的表
 var Examine = require("../models/examine.js") //存放审核员数据的数据表
+
 //定义返回变量格式
 var resData;
 router.use((req, res, next) => {
@@ -22,20 +23,20 @@ router.use((req, res, next) => {
   next()
 })
 
-router.route('/examine').post((req,res) => {
+router.route('/examine').post((req, res) => {
   Examine.findOne({
-    name:req.body.name,
-    pwd:req.body.password
+    name: req.body.name,
+    pwd: req.body.password
   }).then((examineres) => {
     console.log(examineres)
     res.json({
-      code:2,
-      message:"操作成功！"
+      code: 2,
+      message: "操作成功！"
     })
   }).catch(() => {
     res.json({
-      code:5,
-      message:"error"
+      code: 5,
+      message: "error"
     })
   })
 })
@@ -87,7 +88,12 @@ router.route('/deleteuser').get((req, res) => {
 //景点展示查询所有
 router.route('/sceneAll').get((req, res) => {
   if (req.query.word != undefined && req.query.word != '') {
-    Scene.find({title:{$regex:req.query.word,$options:"i"}}).then((data) => {
+    Scene.find({
+      title: {
+        $regex: req.query.word,
+        $options: "i"
+      }
+    }).then((data) => {
       console.log('-----所有景点------')
       console.log(data)
       console.log('-----结束--------')
@@ -98,7 +104,7 @@ router.route('/sceneAll').get((req, res) => {
         scenalldata: data
       })
     })
-  } else{
+  } else {
     Scene.find().then((data) => {
       console.log('-----所有景点------')
       console.log(data)
@@ -139,14 +145,25 @@ router.route('/findSceneById').get((req, res) => {
 //根据id向对应的景点中添加留言内容
 router.route('/leavemessageById').post((req, res) => {
   // console.log({query:req.query,data:req.params,json:req.body})
+  //定义时间
+  var d = new Date()
+  var year = d.getFullYear() //年
+  var month = d.getMonth() + 1 //月
+  var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes() //分
+  var seconds = d.getSeconds() //秒
+  var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
+  var now1 = year + month + day + hour + minutes + seconds
   Scene.update({
     _id: req.body.id
   }, {
     $push: {
       leavemessage: [{
+        'id': now1,
         'name': req.body.name,
         'content': req.body.leavemessage,
-        'creatime': req.body.creatime
+        'creatime': now
       }]
     }
   }).then((leares) => {
@@ -183,17 +200,17 @@ router.route('/scenleavemessagedelete').post((req, res) => {
     })
   })
 })
-//定义时间
-var d = new Date()
-var year = d.getFullYear() //年
-var month = d.getMonth() + 1 //月
-var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
-var hour = d.getHours() //时
-var minutes = d.getMinutes() //分
-var seconds = d.getSeconds() //秒
-var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
 //景点展示-添加景点
 router.route('/addScene').post((req, res) => { //定义接口为/addScene以及请求方式为get
+  //定义时间
+  var d = new Date()
+  var year = d.getFullYear() //年
+  var month = d.getMonth() + 1 //月
+  var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes() //分
+  var seconds = d.getSeconds() //秒
+  var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
   var addscen = new Scene({ //新建一个对象 把表单中的对应的数据赋值到对应的字段中
     title: req.body.title,
     sceneLogo: req.body.sceneLogo,
@@ -230,6 +247,43 @@ router.route('/deleScene').get((req, res) => {
     resData.code = 2
     resData.message = '删除成功'
     res.json(resData)
+  })
+})
+//景点留言回复
+router.route('/scenereply').post((req,res) => {
+  //定义时间
+  var d = new Date()
+  var year = d.getFullYear() //年
+  var month = d.getMonth() + 1 //月
+  var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes() //分
+  var seconds = d.getSeconds() //秒
+  var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
+  var now1 = year + month + day + hour + minutes + seconds
+  Scene.update({"leavemessage.id":req.body.repid},{$set:{"leavemessage.$.replymessage":[{
+    "content":req.body.repword,
+    "id":now1,
+    "createDate":now
+  }]}}).then((represcon) => {
+    console.log("景点留言回复")
+    console.log(represcon)
+    res.json({
+      code:2,
+      message:"回复成功!"
+    })
+  })
+})
+//查询景点评论下的所有回复留言
+router.route('/Searchreply').post((req,res) => {
+  Scene.find({_id:req.body.repleavid},{"leavemessage":{$elemMatch:{"id":req.body.repid}}}).then((searrep) => {
+    console.log('全部景点回复留言')
+    console.log(searrep)
+    res.json({
+      code:2,
+      message:"查询成功！",
+      data:searrep
+    })
   })
 })
 //景点展示-编辑景点
@@ -316,13 +370,18 @@ router.route('/Register').post((req, res) => { //注册路由
 //查询所有的内容
 router.route('/humanAll').post((req, res) => {
   if (req.body.word != undefined && req.body.word != '') {
-    Human.find({"title":{$regex:req.body.word,$options:'i'}}).then((data) => {
+    Human.find({
+      "title": {
+        $regex: req.body.word,
+        $options: 'i'
+      }
+    }).then((data) => {
       res.json(data)
     })
   } else {
     Human.find().then((data) => {
       res.json(data)
-    }) 
+    })
   }
 })
 //根据id查询人文
@@ -351,14 +410,25 @@ router.route('/findHumanById').post((req, res) => {
 })
 //根据id添加对应的留言内容
 router.route('/humleavemessage').post((req, res) => {
+  //定义时间
+  var d = new Date()
+  var year = d.getFullYear() //年
+  var month = d.getMonth() + 1 //月
+  var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes() //分
+  var seconds = d.getSeconds() //秒
+  var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
+  var now1 = year + month + day + hour + minutes + seconds
   Human.update({
     _id: req.body.id
   }, {
     $push: {
       leavemessage: [{
+        'id': now1,
         'name': req.body.name,
         'contant': req.body.contant,
-        'creatime': req.body.creatime
+        'creatime': now
       }]
     }
   }).then((updatefina) => {
@@ -381,8 +451,8 @@ router.route('/humanleavemessagedelete').post((req, res) => {
     }
   }).then((huamnleavdel) => {
     res.json({
-      code:2,
-      message:"删除成功！"
+      code: 2,
+      message: "删除成功！"
     })
   })
 })
@@ -399,7 +469,16 @@ router.route('/humanDel').post((req, res) => {
   })
 })
 //修改人文地理内容
-router.route('/humanchange').post((req,res) => {
+router.route('/humanchange').post((req, res) => {
+  //定义时间
+  var d = new Date()
+  var year = d.getFullYear() //年
+  var month = d.getMonth() + 1 //月
+  var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes() //分
+  var seconds = d.getSeconds() //秒
+  var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
   var changeitem = {
     title: req.body.title,
     humanimg: req.body.humanimg,
@@ -435,17 +514,59 @@ router.route('/addhuman').post((req, res) => {
   })
   res.json(human)
 })
+//景点留言回复
+router.route('/humanreply').post((req,res) => {
+  //定义时间
+  var d = new Date()
+  var year = d.getFullYear() //年
+  var month = d.getMonth() + 1 //月
+  var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes() < 10 ? '0' + d.getMinutes() : '' + d.getMinutes() //分
+  var seconds = d.getSeconds() //秒
+  var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
+  var now1 = year + month + day + hour + minutes + seconds
+  Human.update({"leavemessage.id":req.body.repid},{$set:{"leavemessage.$.replymessage":[{
+    "content":req.body.repword,
+    "id":now1,
+    "createDate":now
+  }]}}).then((represcon) => {
+    console.log("景点留言回复")
+    console.log(represcon)
+    res.json({
+      code:2,
+      message:"回复成功!"
+    })
+  })
+})
+//查询景点评论下的所有回复留言
+router.route('/Searchhumreply').post((req,res) => {
+  Human.find({_id:req.body.repleavid},{"leavemessage":{$elemMatch:{"id":req.body.repid}}}).then((searrep) => {
+    console.log('全部景点回复留言')
+    console.log(searrep)
+    res.json({
+      code:2,
+      message:"查询成功！",
+      data:searrep
+    })
+  })
+})
 //新闻发布
 //查找所有新闻内容
 router.route('/allNews').post((req, res) => {
   if (req.body.word != undefined && req.body.word != '') {
-    News.find({'newsTitle':{$regex:req.body.word,$options:'i'}}).then((data) => {
+    News.find({
+      'newsTitle': {
+        $regex: req.body.word,
+        $options: 'i'
+      }
+    }).then((data) => {
       res.json(data)
     })
   } else {
     News.find().then((data) => {
       res.json(data)
-    }) 
+    })
   }
 })
 //根据id查询新闻
@@ -461,19 +582,30 @@ router.route('/findnewById').post((req, res) => {
   })
 })
 //新闻修改按钮提交
-router.route('/newschange').post((req,res) => {
+router.route('/newschange').post((req, res) => {
+  //定义时间
+  var d = new Date()
+  var year = d.getFullYear() //年
+  var month = d.getMonth() + 1 //月
+  var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
+  var hour = d.getHours() //时
+  var minutes = d.getMinutes() //分
+  var seconds = d.getSeconds() //秒
+  var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
   var newsdata = {
-    newsTitle:req.body.newsTitle,
-    newsimg:req.body.newsimg,
-    releaseCon:req.body.releaseCon,
-    releaseDate:req.body.releaseDate,
-    updateData:now
+    newsTitle: req.body.newsTitle,
+    newsimg: req.body.newsimg,
+    releaseCon: req.body.releaseCon,
+    releaseDate: req.body.releaseDate,
+    updateData: now
   }
-  News.updateOne({_id:req.body.id},newsdata).then((newchangeres) => {
+  News.updateOne({
+    _id: req.body.id
+  }, newsdata).then((newchangeres) => {
     console.log(newchangeres)
     res.json({
-      code:2,
-      message:"修改成功！"
+      code: 2,
+      message: "修改成功！"
     })
   })
 })

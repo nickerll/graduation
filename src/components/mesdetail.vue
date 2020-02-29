@@ -18,6 +18,11 @@
               <h1>{{item.name}}</h1>
               <p>{{item.content}}</p>
               <span>{{item.creatime}}</span>
+              <div class="scenereply" v-for="(item1,index1) in item.replymessage">
+                  <h1>管理员回复：</h1>
+                  <p>{{item1.content}}</p>
+                  <span>{{item1.createDate}}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -35,7 +40,6 @@
       return {
         msg: '',
         sceneliu: '',
-        nowtime: '',
         Length:''
       }
     },
@@ -45,8 +49,7 @@
           this.$http.post('/users/leavemessageById', this.qs.stringify({
             id: this.$route.query.id,
             leavemessage: this.sceneliu,
-            name: JSON.parse(sessionStorage.$user).name,
-            creatime: this.nowtime
+            name: JSON.parse(sessionStorage.$user).name
           })).then((res) => {
             console.log(res)
             if (res.status == 200 && res.statusText == "OK") {
@@ -93,19 +96,8 @@
       }
     },
     created() {
-      //定义时间
-      var d = new Date()
-      var year = d.getFullYear() //年
-      var month = d.getMonth() + 1 //月
-      var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate() //日  三目运算符  判断是否小于十，如果小于十加零否则直接显示
-      var hour = d.getHours() //时
-      var minutes = d.getMinutes() //分
-      var seconds = d.getSeconds() //秒
-      var now = year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds //日期拼接  年-月-日 时:分:秒
-      this.nowtime = now
       //根据id查询数据
       this.showAllleaveMessage()
-      
     },
     mounted() {
       
