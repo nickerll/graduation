@@ -4,7 +4,7 @@
     <!-- <lunbo></lunbo> -->
     <div class="lunbo">
       <div style="background: #dfdfdf;position: absolute;left: 0;height: 100%;z-index: 10;width: 115px;"></div>
-      <!-- <video src="../assets/VID_20200107_213647.mp4" autoplay loop width="100%"></video> -->
+      <video src="../assets/VID_20200107_213647.mp4" autoplay loop width="100%"></video>
       <div style="background: #dfdfdf;position: absolute;right: 0;top:0;height: 100%;z-index: 10;width: 115px;"></div>
     </div>
     <div class="jianjie">
@@ -35,8 +35,8 @@
         <div class="humcon">
           <h1>人文地理<span @click="gohumanlist" class="oldscmore">more <i class="el-icon-arrow-right"></i></span></h1>
           <div class="humdiv" v-if="index < 2" v-for="(item, index) in humList">
-            <b>{{ item.title }}</b>
-            <p>{{ item.humandesc }}</p>
+            <b class="hutitle">{{ item.title }}</b>
+            <p class="hudesc">{{ item.humandesc }}</p>
             <span @click="undermore(item._id)">了解更多</span>
           </div>
         </div>
@@ -164,6 +164,22 @@
 
 </script>
 <style lang="">
+	.hudesc{
+		display: -webkit-box;
+		height: 175px;
+		overflow: hidden;
+		-webkit-line-clamp: 9;
+		-webkit-box-orient: vertical;
+		text-overflow: ellipsis;
+	}
+	.hutitle{
+		display: -webkit-box;
+		height: 35px;
+		overflow: hidden;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		text-overflow: ellipsis;
+	}
   .iconshen{
     float: right;
     margin-right: 10px;
@@ -184,7 +200,8 @@
     height: 100vh;
     top: 0;
     left: 0;
-    background: rgba(0,0,0,0.5)
+    background: rgba(0,0,0,0.5);
+	z-index:10;
   }
   .plancon{
     width: 1200px;

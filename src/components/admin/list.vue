@@ -42,21 +42,21 @@
       </el-tab-pane>
       <!-- 用户管理结束 -->
       <!-- 景点展示 -->
-      <el-tab-pane label="景点展示维护" style="width: 1041px;">
+      <el-tab-pane label="景点展示维护" style="width: 901px;">
         <!-- 景点展示列表 -->
         <el-button @click="addscen" v-show="scenTable" class="scenbtn" type="primary" size="mini" icon="el-icon-plus">新增
         </el-button>
         <el-table :data="scenData" border style="width:100%;" v-show="scenTable">
           <el-table-column type="index" label="序号" width="100">
           </el-table-column>
-          <el-table-column prop="title" label="景点名称" width="230">
+          <el-table-column prop="title" label="景点名称" width="150">
           </el-table-column>
           <el-table-column prop="sceneLogo" label="景点图片" width="230">
             <template slot-scope="scope">
               <img :src="commonUtil.getImgPath(scope.row.sceneLogo)" style="width: 208px;height: 90px;" />
             </template>
           </el-table-column>
-          <el-table-column prop='createData' label='创建时间' width='230'>
+          <el-table-column prop='createData' label='创建时间' width='170'>
           </el-table-column>
           <el-table-column label="操作" width="250">
             <template slot-scope="scope">
@@ -125,7 +125,7 @@
       </el-tab-pane>
       <!-- 景点展示结束 -->
       <!-- 人文地理 -->
-      <el-tab-pane label="人文地理维护">
+      <el-tab-pane label="人文地理维护" style="width: 920px;">
         <!-- 人文列表 -->
         <el-button class="scenbtn" type="primary" @click="humaddbtn" v-show="humbtn" icon="el-icon-plus" size="mini">新增
         </el-button>
@@ -142,7 +142,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="humandesc" label="人文描述" width="180"></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="280">
             <template slot-scope="scope">
               <el-button size="mini" @click="humanedit(scope.$index, scope.row)">编辑</el-button>
               <el-button size="mini" type="danger" @click="humandel(scope.$index, scope.row)">删除</el-button>
@@ -192,14 +192,14 @@
       </el-tab-pane>
       <!-- 人文地理结束 -->
       <!-- 新闻发布 -->
-      <el-tab-pane label="新闻发布维护">
+      <el-tab-pane label="新闻发布维护" style="width: 890px;">
         <!-- 新闻列表 -->
         <el-button class="scenbtn" type="primary" @click="newsaddbtn" v-show="newsbtn" icon="el-icon-plus" size="mini">
           新增</el-button>
         <el-table v-show="newstab" :data="newsData" border style="width: 100%;">
-          <el-table-column type="index" label="序号" width="100">
+          <el-table-column type="index" label="序号" width="50">
           </el-table-column>
-          <el-table-column prop="newsTitle" label="新闻标题" width="180">
+          <el-table-column prop="newsTitle" label="新闻标题" width="150">
           </el-table-column>
           <el-table-column prop="newsimg" label="新闻图片" width="180">
             <!-- <el-image :src="news.newsimg">
@@ -210,9 +210,9 @@
           </el-table-column>
           <el-table-column prop="releaseCon" label="新闻内容" width="180">
           </el-table-column>
-          <el-table-column prop="releaseDate" label="新闻时间" width="180">
+          <el-table-column prop="releaseDate" label="新闻时间" width="150">
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="180">
             <template slot-scope="scope">
               <el-button size="mini" @click="newsedit(scope.$index, scope.row)">编辑</el-button>
               <el-button size="mini" type="danger" @click="newsdel(scope.$index, scope.row)">删除</el-button>
@@ -258,7 +258,7 @@
             </el-col>
           </el-row>
           <el-row type="flex" justify="left">
-            <el-col :span="5">
+            <el-col :span="8" :offset="5">
               <el-button v-if="newchange" type="primary" icon="el-icon-upload" @click="newsSub">提交</el-button>
               <el-button v-else type="primary" icon="el-icon-upload" @click="newschg">修改</el-button>
               <el-button type="info" icon="el-icon-close" @click="newscolse">关闭</el-button>
@@ -837,6 +837,13 @@
 </script>
 
 <style>
+	.el-table .cell{
+		text-overflow: ellipsis;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		display: -webkit-box;
+		text-align: center;
+	}
   .el-table--scrollable-x .el-table__body-wrapper {
     overflow-x: hidden;
   }
